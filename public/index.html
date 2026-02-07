@@ -142,19 +142,21 @@
     const BC_CH='nb_html_custom_users_inc_commas_nospace_tight_stacked_channel';
 
     const LAYOUT=[
-      [0,42,0,0,0,0,0,0,0,0,55],
-      [40,41,0,45,46,0,49,50,0,53,54],
-      [39,38,0,43,44,0,47,48,0,51,52],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [23,24,0,27,28,0,31,32,0,36,37],
-      [21,22,0,25,26,0,29,30,0,34,35],
-      [0,20,0,0,0,0,0,0,0,0,33],
-      [0,0,0,0,0,0,0,0,0,0,0],
-      [0,7,0,0,0,0,19,0,0,0,0],
-      [5,6,0,12,0,0,17,18,0,0,0],
-      [3,4,0,10,11,0,15,16,0,0,0],
-      [1,2,0,8,9,0,13,14,0,0,0],
+      [0,42,0.5,0,0,0.5,0,0,0.5,0,55],
+      [40,41,0.5,45,46,0.5,49,50,0.5,53,54],
+      [39,38,0.5,43,44,0.5,47,48,0.5,51,52],
+      [0,0,0.5,0,0,0.5,0,0,0.5,0,0],
+      [23,24,0.5,27,28,0.5,31,32,0.5,36,37],
+      [21,22,0.5,25,26,0.5,29,30,0.5,34,35],
+      [0,20,0.5,0,0,0.5,0,0,0.5,0,33],
+      [0,0,0.5,0,0,0.5,0,0,0.5,0,0],
+      [0,7,0.5,0,0,0.5,19,0,0.5,0,0],
+      [5,6,0.5,12,0,0.5,17,18,0.5,0,0],
+      [3,4,0.5,10,11,0.5,15,16,0.5,0,0],
+      [1,2,0.5,8,9,0.5,13,14,0.5,0,0],
     ];
+
+const colWidths = LAYOUT[0].map(v => v === 0.5 ? TILE * 0.5 : TILE);
 
     const elBoard=document.getElementById('board');
     const elLogs=document.getElementById('logs');
@@ -187,34 +189,61 @@
     // Board grid (tile 60px, gap 4px)
     elBoard.innerHTML='';elBoard.style.display='grid';
     const maxCols=Math.max.apply(null,LAYOUT.map(r=>r.length));
-    elBoard.style.gridTemplateColumns=`repeat(${maxCols}, ${TILE}px)`;
+    elBoard.style.gridTemplateColumns = colWidths.map(w => w + 'px').join(' ');
     elBoard.style.columnGap='0px';
     elBoard.style.rowGap='0px';
     elBoard.style.justifyContent='start';
 
     const cells=[];
-    for(const row of LAYOUT){
-      for(const n of row){
-        const d=document.createElement('div');
-if(n===0){
-  d.className='cell';
-  d.style.visibility='hidden';
-  d.style.border='none';
-  d.style.width=TILE+'px';
-  d.style.height=TILE+'px';
-  elBoard.appendChild(d);
-  continue;   // ← これが絶対必要
-}
+for(const row of LAYOUT){
+  for(const n of row){
+    const d=document.createElement('div');
 
-        d.className='cell bg-4';d.title=n+'番';d.style.margin='0';
-        const inner=document.createElement('div');inner.className='cell-inner';
-        const num=document.createElement('div');num.className='num';num.textContent=String(n);
-        const sub=document.createElement('div');sub.className='sub';sub.textContent='空き4';
-        inner.appendChild(num);inner.appendChild(sub);d.appendChild(inner);elBoard.appendChild(d);
-        cells[n]={root:d,sub};
-      }
+    // 0.5 → 半マス空き
+    if(n === 0.5){
+      d.style.width = (TILE * 0.5) + 'px';
+      d.style.height = TILE + 'px';
+      d.style.visibility = 'hidden';
+      d.style.border = 'none';
+      elBoard.appendChild(d);
+      continue;
     }
 
+    // 0 → 1マス空き
+    if(n === 0){
+      d.style.width = TILE + 'px';
+      d.style.height = TILE + 'px';
+      d.style.visibility = 'hidden';
+      d.style.border = 'none';
+      elBoard.appendChild(d);
+      continue;
+    }
+
+    // 通常の番号セル
+    d.className='cell bg-4';
+    d.style.width = TILE + 'px';
+    d.style.height = TILE + 'px';
+    d.title=n+'番';
+
+    const inner=document.createElement('div');
+    inner.className='cell-inner';
+
+    const num=document.createElement('div');
+    num.className='num';
+    num.textContent=String(n);
+
+    const sub=document.createElement('div');
+    sub.className='sub';
+    sub.textContent='空き4';
+
+    inner.appendChild(num);
+    inner.appendChild(sub);
+    d.appendChild(inner);
+    elBoard.appendChild(d);
+
+    cells[n]={root:d,sub};
+  }
+}
     function colorClassByRemaining(rem){switch(rem){case 4:return'bg-4';case 3:return'bg-3';case 2:return'bg-2';case 1:return'bg-1';default:return'bg-0'}}
     function renderBoard(){for(let n=1;n<=BOARD_SIZE;n++){const c=cells[n];if(!c)continue;const rem=state.remaining[n];c.root.className='cell '+colorClassByRemaining(rem);c.sub.textContent=rem===0?'空き0':'空き'+rem;c.root.title=n+'番: '+(rem===0?'空き0':'空き'+rem)}}
     function renderStats(){const cnt={0:0,1:0,2:0,3:0,4:0};for(let i=1;i<=BOARD_SIZE;i++)cnt[state.remaining[i]]++;elStat[0].textContent='空き0: '+cnt[0]+'件';elStat[1].textContent='空き1: '+cnt[1]+'件';elStat[2].textContent='空き2: '+cnt[2]+'件';elStat[3].textContent='空き3: '+cnt[3]+'件';elStat[4].textContent='空き4: '+cnt[4]+'件'}
