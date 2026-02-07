@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>番号スロット管理ボード(1-55)｜サーバ同期版</title>
+  <style>
+    :root { --bg:#f8fafc; --fg:#111827; --muted:#6b7280; --card:#ffffff; --bd:#e5e7eb;
+      --blue:#3b82f6; --blue-dark:#2563eb; --green:#22c55e; --green-dark:#16a34a;
+      --red:#ef4444; --red-dark:#dc2626; --gray:#d1d5db; --gray-dark:#9ca3af;
+      --white:#ffffff; --amber:#f59e0b; }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans JP,Helvetica,Arial}
+    .container{max-width:1280px;margin:0 auto;padding:16px}
+    h1{font-size:24px;margin:0 0 4px}.muted{color:var(--muted);font-size:12px}
+    .legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .legend-item{display:flex;align-items:center;gap:6px;font-size:12px}
+    .legend-swatch{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.1)}
+    .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;
+      padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+
+    .toolbar{display:grid;grid-template-columns:1fr;row-gap:10px}
+    .field{display:flex;flex-direction:column}
+    .field label{font-size:12px;color:var(--muted);margin-bottom:4px}
+    .field input[type=text]{padding:10px 12px;border-radius:12px;border:1px solid var(--bd);
+      outline:none}
+    .field input[type=text]:focus{border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+
+    .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .btn{padding:10px 14px;border-radius:12px;border:1px solid var(--bd);
+      background:#f3f4f6;cursor:pointer}
+    .btn-primary{background:var(--blue);color:#fff;border-color:var(--blue-dark)}
+    .btn-amber{background:#fef3c7;color:#7c2d12;border-color:#fcd34d}
+
+    .pill{padding:4px 10px;border-radius:999px;font-size:12px;border:1px solid rgba(0,0,0,.05)}
+    .pill-4{background:var(--blue);color:#fff}
+    .pill-3{background:var(--green);color:#fff}
+    .pill-2{background:var(--red);color:#fff}
+    .pill-1{background:var(--gray);color:#111}
+    .pill-0{background:#fff;color:#111;border-color:#d1d5db}
+
+    .reply{background:#fffbeb;color:#854d0e;border:1px solid #fde68a;
+      padding:4px 8px;border-radius:8px;font-size:12px}
+
+    .cell{border:1px solid var(--bd);border-radius:10px;width:60px;height:60px;
+      display:flex;align-items:center;justify-content:center;user-select:none;
+      box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .cell-inner{text-align:center}
+    .num{font-weight:700}
+    .sub{font-size:10px;margin-top:2px}
+
+    .bg-4{background:var(--blue);color:#fff;border-color:var(--blue-dark)}
+    .bg-3{background:var(--green);color:#fff;border-color:var(--green-dark)}
+    .bg-2{background:var(--red);color:#fff;border-color:var(--red-dark)}
+    .bg-1{background:var(--gray);color:#111;border-color:var(--gray-dark)}
+    .bg-0{background:#fff;color:#111;border-color:#d1d5db}
+
+    .logs{max-height:320px;overflow:auto;padding-right:6px}
+    .log-item{padding:8px 0;border-bottom:1px solid #f3f4f6}
+    .badge{padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid;margin-right:6px}
+    .badge-ok{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+    .badge-ng{background:#fff1f2;color:#be123c;border-color:#fecdd3}
+
+    .user-list{max-height:360px;overflow:auto;padding-right:6px}
+    .user-item{border-bottom:1px dashed #e5e7eb;padding:8px 0}
+    .user-name{font-weight:600}
+    .nums{margin-top:6px;font-size:13px;line-height:1.6}
+    .n{display:inline-block;min-width:22px;text-align:center;padding:2px 6px;
+      border-radius:999px;border:1px solid #e5e7eb;background:#fff;margin:2px 4px 2px 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header style="display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;">
+      <div>
+        <h1>番号スロット管理ボード(1-55)｜サーバ同期版</h1>
+        <div class="muted">空き4=青 / 空き3=緑 / 空き2=赤 / 空き1=灰 / 空き0=白</div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--blue);"></span>空き4</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--green);"></span>空き3</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--red);"></span>空き2</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--gray);"></span>空き1</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#fff;border:1px solid #d1d5db;"></span>空き0</div>
+      </div>
+    </header>
+    <section class="card" style="margin-top:12px;">
+      <div class="toolbar">
+        <div class="field">
+          <label>投稿者(任意)</label>
+          <input id="inUser" type="text" placeholder="例: 佐藤" />
+        </div>
+
+        <div class="field">
+          <label>番号（カンマ区切りのみ）｜管理投稿は先頭を「-」で開始</label>
+          <input id="inNums" type="text" placeholder="例: 5,12,27 ／ 管理例: -5,5,12" />
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btnPost">投稿</button>
+          <button class="btn" id="btnReset">全リセット</button>
+          <div class="muted" id="lastUpdate">最終更新: --:--:--</div>
+          <div id="reply" style="margin-left:auto;"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="row" style="display:flex;gap:12px;margin-top:12px;">
+      <div class="card" style="flex:1;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+          <span class="pill pill-4" id="stat4">空き4: 55件</span>
+          <span class="pill pill-3" id="stat3">空き3: 0件</span>
+          <span class="pill pill-2" id="stat2">空き2: 0件</span>
+          <span class="pill pill-1" id="stat1">空き1: 0件</span>
+          <span class="pill pill-0" id="stat0">空き0: 0件</span>
+        </div>
+        <div id="board"></div>
+      </div>
+
+      <div class="card" style="width:320px;">
+        <h2 style="margin:0 0 8px;font-size:18px;">投稿者別 取得リスト</h2>
+        <div class="muted" style="margin-bottom:6px;">（確保済み番号を投稿者ごとに集計）</div>
+        <div id="userAlloc" class="user-list"></div>
+      </div>
+    </section>
+
+    <section class="row" style="display:flex;gap:12px;margin-top:12px;">
+      <div class="card" style="flex:1;">
+        <h2 style="margin:0 0 8px;font-size:18px;">投稿ログ</h2>
+        <div class="logs" id="logs"><div class="muted">投稿はまだありません。</div></div>
+      </div>
+
+      <div class="card" style="width:320px;">
+        <h2 style="margin:0 0 8px;font-size:18px;">使い方メモ</h2>
+        <ul style="margin:0 0 6px 18px;font-size:14px;color:#374151;">
+          <li>通常投稿：カンマ区切りのみ（空白不可）</li>
+          <li>管理投稿：先頭を「-」で開始し、後はカンマ区切りのみ</li>
+          <li>例：<code>-5,5,12</code> → 5を+2、12を+1（最大4）</li>
+          <li>「- 5,12」など、マイナス直後に空白がある投稿はエラー</li>
+          <li>全リセット：全番号を空き0に（SYSTEMログ）</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+<script>
+(function(){
+
+  const BOARD_SIZE = 55;
+  const MAX_SLOTS = 4;
+  const TILE = 60;
+
+  const elBoard = document.getElementById('board');
+  const elLogs = document.getElementById('logs');
+  const elReply = document.getElementById('reply');
+  const elLast = document.getElementById('lastUpdate');
+  const inUser = document.getElementById('inUser');
+  const inNums = document.getElementById('inNums');
+  const btnPost = document.getElementById('btnPost');
+  const btnReset = document.getElementById('btnReset');
+  const elUserAlloc = document.getElementById('userAlloc');
+  const elStat = {
+    0: document.getElementById('stat0'),
+    1: document.getElementById('stat1'),
+    2: document.getElementById('stat2'),
+    3: document.getElementById('stat3'),
+    4: document.getElementById('stat4')
+  };
+
+  // ------------------------------
+  // レイアウト（元のまま）
+  // ------------------------------
+  const LAYOUT = [
+    [0,42,0,0,0,0,0,0,0,0,55,0],
+    [40,41,0,45,46,0,49,50,0,53,54,0],
+    [39,38,0,43,44,0,47,48,0,51,52,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [23,24,0,27,28,0,31,32,0,36,37,0],
+    [21,22,0,25,26,0,29,30,0,34,35,0],
+    [0,20,0,0,0,0,0,0,0,0,33,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,7,0,0,0,0,0,0,19,0,0],
+    [0,5,6,0,0,12,0,0,0,17,18,0],
+    [0,3,4,0,0,10,11,0,0,15,16,0],
+    [0,1,2,0,0,8,9,0,0,13,14,0],
+  ];
+
+  // ------------------------------
+  // ボード生成
+  // ------------------------------
+  elBoard.innerHTML = '';
+  elBoard.style.display = 'grid';
+  const maxCols = Math.max(...LAYOUT.map(r => r.length));
+  elBoard.style.gridTemplateColumns = `repeat(${maxCols}, ${TILE}px)`;
+  elBoard.style.columnGap = '4px';
+  elBoard.style.rowGap = '4px';
+
+  const cells = {};
+
+  for (const row of LAYOUT) {
+    for (const n of row) {
+      const d = document.createElement('div');
+      if (n === 0) {
+        d.className = 'cell';
+        d.style.visibility = 'hidden';
+        elBoard.appendChild(d);
+        continue;
+      }
+      d.className = 'cell bg-4';
+      d.title = n + '番';
+
+      const inner = document.createElement('div');
+      inner.className = 'cell-inner';
+
+      const num = document.createElement('div');
+      num.className = 'num';
+      num.textContent = String(n);
+
+      const sub = document.createElement('div');
+      sub.className = 'sub';
+      sub.textContent = '空き4';
+
+      inner.appendChild(num);
+      inner.appendChild(sub);
+      d.appendChild(inner);
+      elBoard.appendChild(d);
+
+      cells[n] = { root: d, sub };
+    }
+  }
+
+  // ------------------------------
+  // サーバから状態取得
+  // ------------------------------
+  let state = null;
+
+  async function fetchState() {
+    try {
+      const res = await fetch('/state');
+      state = await res.json();
+      renderAll();
+    } catch (e) {
+      console.error('state fetch error', e);
+    }
+  }
+
+  // 初回ロード
+  fetchState();
+
+  // 2秒ごとに同期
+  setInterval(fetchState, 2000);
+
+  // ------------------------------
+  // レンダリング
+  // ------------------------------
+  function colorClass(rem) {
+    return rem === 4 ? 'bg-4'
+      : rem === 3 ? 'bg-3'
+      : rem === 2 ? 'bg-2'
+      : rem === 1 ? 'bg-1'
+      : 'bg-0';
+  }
+
+  function renderBoard() {
+    if (!state) return;
+    for (let n = 1; n <= BOARD_SIZE; n++) {
+      const c = cells[n];
+      if (!c) continue;
+      const rem = state.remaining[n];
+      c.root.className = 'cell ' + colorClass(rem);
+      c.sub.textContent = rem === 0 ? '空きなし' : '空き' + rem;
+      c.root.title = `${n}番: ${c.sub.textContent}`;
+    }
+  }
+
+  function renderStats() {
+    if (!state) return;
+    const cnt = {0:0,1:0,2:0,3:0,4:0};
+    for (let i = 1; i <= BOARD_SIZE; i++) cnt[state.remaining[i]]++;
+    elStat[0].textContent = `空き0: ${cnt[0]}件`;
+    elStat[1].textContent = `空き1: ${cnt[1]}件`;
+    elStat[2].textContent = `空き2: ${cnt[2]}件`;
+    elStat[3].textContent = `空き3: ${cnt[3]}件`;
+    elStat[4].textContent = `空き4: ${cnt[4]}件`;
+  }
+
+  function formatTime(ts) {
+    const d = new Date(ts);
+    const pad = n => String(n).padStart(2,'0');
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
+  function renderLogs() {
+    if (!state) return;
+    const logs = state.logs || [];
+    elLogs.innerHTML = '';
+
+    if (logs.length === 0) {
+      elLogs.innerHTML = '<div class="muted">投稿はまだありません。</div>';
+      return;
+    }
+
+    for (const l of logs) {
+      const item = document.createElement('div');
+      item.className = 'log-item';
+
+      const head = document.createElement('div');
+      head.className = 'muted';
+      head.textContent = `${formatTime(l.at)} ・ ${l.user || '匿名'}`;
+
+      const body = document.createElement('div');
+      for (const r of (l.results || [])) {
+        const b = document.createElement('span');
+        b.className = 'badge ' + (r.ok ? 'badge-ok' : 'badge-ng');
+
+        if (r.type === 'inc') {
+          b.textContent = r.ok ? `${r.number} 空きを+1` : `${r.number} 既に空き4`;
+        } else {
+          b.textContent = r.ok
+            ? `${r.number} 取得`
+            : `${r.number}${r.reason === 'dup' ? '(重複)' : ' 番なし'}`;
+        }
+        body.appendChild(b);
+      }
+
+      item.appendChild(head);
+      item.appendChild(body);
+      elLogs.appendChild(item);
+    }
+  }
+
+  function renderUserAlloc() {
+    if (!state) return;
+    const map = new Map();
+
+    for (let n = 1; n <= BOARD_SIZE; n++) {
+      const arr = state.owners[n] || [];
+      arr.forEach(u => {
+        const k = u || '匿名';
+        if (!map.has(k)) map.set(k, []);
+        map.get(k).push(n);
+      });
+    }
+
+    const users = [...map.keys()].sort((a,b)=>a.localeCompare(b,'ja'));
+    elUserAlloc.innerHTML = '';
+
+    if (users.length === 0) {
+      elUserAlloc.innerHTML = '<div class="muted">確保済みの番号はまだありません。</div>';
+      return;
+    }
+
+    for (const u of users) {
+      const wrap = document.createElement('div');
+      wrap.className = 'user-item';
+
+      const name = document.createElement('div');
+      name.className = 'user-name';
+      name.textContent = `${u}（${map.get(u).length}件）`;
+
+      const nums = document.createElement('div');
+      nums.className = 'nums';
+
+      for (const n of map.get(u).slice().sort((x,y)=>x-y)) {
+        const s = document.createElement('span');
+        s.className = 'n';
+        s.textContent = String(n);
+        nums.appendChild(s);
+      }
+
+      wrap.appendChild(name);
+      wrap.appendChild(nums);
+      elUserAlloc.appendChild(wrap);
+    }
+  }
+
+  function renderMeta() {
+    if (!state) return;
+    elLast.textContent = '最終更新: ' + formatTime(state.lastUpdate);
+  }
+
+  function renderAll() {
+    renderBoard();
+    renderStats();
+    renderLogs();
+    renderMeta();
+    renderUserAlloc();
+  }
+  // ------------------------------
+  // 投稿処理（サーバへ送信）
+  // ------------------------------
+  async function post() {
+    const raw = inNums.value.trim();
+    if (!raw) {
+      elReply.innerHTML = '<span class="reply">番号を入力してください</span>';
+      return;
+    }
+
+    // 入力解析（元コードを踏襲）
+    const parsed = parseInput(raw);
+    if (parsed.mode === 'err') {
+      elReply.innerHTML = `<span class="reply">${parsed.err}</span>`;
+      return;
+    }
+
+    if (parsed.numbers.length === 0) {
+      elReply.innerHTML = '<span class="reply">有効な番号(1-55)を入力してください</span>';
+      return;
+    }
+
+    const payload = {
+      mode: parsed.mode,
+      numbers: parsed.numbers,
+      user: inUser.value || '匿名'
+    };
+
+    try {
+      const res = await fetch('/post', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      state = await res.json();
+      renderAll();
+      inNums.value = '';
+    } catch (e) {
+      console.error('post error', e);
+      elReply.innerHTML = '<span class="reply">サーバ通信エラー</span>';
+    }
+  }
+
+  // ------------------------------
+  // 全リセット
+  // ------------------------------
+  async function resetAll() {
+    if (!confirm('全番号を空き0にします。よろしいですか?')) return;
+
+    try {
+      const res = await fetch('/reset', { method:'POST' });
+      state = await res.json();
+      renderAll();
+      elReply.innerHTML = '<span class="reply">全て空き0に設定しました（SYSTEM）</span>';
+    } catch (e) {
+      console.error('reset error', e);
+      elReply.innerHTML = '<span class="reply">サーバ通信エラー</span>';
+    }
+  }
+
+  // ------------------------------
+  // 入力解析（元コードを踏襲）
+  // ------------------------------
+  function parseInput(raw) {
+    const s = String(raw || '').trim();
+    if (!s) return { mode:'take', numbers:[], err:null };
+
+    if (/^-[\s]/.test(s))
+      return { mode:'err', numbers:[], err:'管理投稿は「-」直後に空白不可' };
+
+    if (s.startsWith('-')) {
+      const payload = s.slice(1);
+      if (payload.includes(' '))
+        return { mode:'err', numbers:[], err:'管理投稿はカンマ区切りのみ（空白不可）' };
+
+      const parts = payload.split(',').map(x=>x.trim()).filter(Boolean);
+      const nums = parts.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);
+      return { mode:'inc', numbers:nums, err:null };
+    }
+
+    if (/\s/.test(s))
+      return { mode:'err', numbers:[], err:'通常投稿はカンマ区切りのみ（空白不可）' };
+
+    const parts = s.split(',').map(x=>x.trim()).filter(Boolean);
+    const unique = [...new Set(parts.map(Number))]
+      .filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);
+
+    return { mode:'take', numbers:unique, err:null };
+  }
+
+  // ------------------------------
+  // イベント
+  // ------------------------------
+  btnPost.addEventListener('click', post);
+  btnReset.addEventListener('click', resetAll);
+  inNums.addEventListener('keydown', e => {
+    if (e.key === 'Enter') post();
+  });
+
+})();
+</script>
+
+</body>
+</html>
