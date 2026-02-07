@@ -12,7 +12,6 @@
     .legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.legend-item{display:flex;align-items:center;gap:6px;font-size:12px}.legend-swatch{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.1)}
     .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:8px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 
-    /* ------- Inputs layout: stack vertically ------- */
     .toolbar{display:grid;grid-template-columns: 1fr;grid-auto-rows:auto;row-gap:10px}
     .field{display:flex;flex-direction:column}
     .field label{display:block;font-size:12px;color:var(--muted);margin:0 0 4px}
@@ -20,7 +19,6 @@
     .field input[type=text]:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
     .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-    /* Buttons / pills */
     .btn{padding:10px 14px;border-radius:12px;border:1px solid var(--bd);background:#f3f4f6;cursor:pointer}
     .btn-primary{background:var(--blue);color:#fff;border-color:var(--blue-dark)}
     .btn-amber{background:#fef3c7;color:#7c2d12;border-color:#fcd34d}
@@ -28,29 +26,41 @@
     .pill-4{background:var(--blue);color:#fff}.pill-3{background:var(--green);color:#fff}.pill-2{background:var(--red);color:#fff}.pill-1{background:var(--gray);color:#111}.pill-0{background:#fff;color:#111;border-color:#d1d5db}
     .reply{display:inline-block;background:#fffbeb;color:#854d0e;border:1px solid #fde68a;padding:4px 8px;border-radius:8px;font-size:12px}
 
-    /* Tight cells */
-    
-.cell{
-  width:34px;
-  height:34px;
-  border:0.5px solid #ddd;
-  box-sizing:border-box;   /* ← これで隙間ゼロ */
-  border-radius:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0;
-  box-shadow:none;
-  user-select:none;
-}
+    .cell{
+      width:34px;
+      height:34px;
+      border:0.5px solid #ddd;
+      box-sizing:border-box;
+      border-radius:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0;
+      box-shadow:none;
+      user-select:none;
+    }
 
+    .cell .num{font-weight:700;line-height:1}
+    .cell .sub{font-size:10px;margin-top:2px;text-align:center}
+    .cell-inner{text-align:center}
 
+    .bg-4{background:var(--blue);color:#fff;border-color:var(--blue-dark)}
+    .bg-3{background:var(--green);color:#fff;border-color:var(--green-dark)}
+    .bg-2{background:var(--red);color:#fff;border-color:var(--red-dark)}
+    .bg-1{background:var(--gray);color:#111;border-color:var(--gray-dark)}
+    .bg-0{background:var(--white);color:#111;border-color:#d1d5db}
 
-    .cell .num{font-weight:700;line-height:1}.cell .sub{font-size:10px;margin-top:2px;text-align:center}.cell-inner{text-align:center}
-    .bg-4{background:var(--blue);color:#fff;border-color:var(--blue-dark)}.bg-3{background:var(--green);color:#fff;border-color:var(--green-dark)}.bg-2{background:var(--red);color:#fff;border-color:var(--red-dark)}.bg-1{background:var(--gray);color:#111;border-color:var(--gray-dark)}.bg-0{background:var(--white);color:#111;border-color:#d1d5db}
+    .logs{max-height:320px;overflow:auto;padding-right:6px}
+    .log-item{padding:8px 0;border-bottom:1px solid #f3f4f6}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid;margin-right:6px;margin-bottom:4px}
+    .badge-ok{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+    .badge-ng{background:#fff1f2;color:#be123c;border-color:#fecdd3}
 
-    .logs{max-height:320px;overflow:auto;padding-right:6px}.log-item{padding:8px 0;border-bottom:1px solid #f3f4f6}.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid;margin-right:6px;margin-bottom:4px}.badge-ok{background:#ecfdf5;color:#047857;border-color:#a7f3d0}.badge-ng{background:#fff1f2;color:#be123c;border-color:#fecdd3}
-    .user-list{max-height:360px;overflow:auto;padding-right:6px}.user-item{border-bottom:1px dashed #e5e7eb;padding:8px 0}.user-name{font-weight:600}.nums{margin-top:6px;font-size:13px;line-height:1.6}.nums .n{display:inline-block;min-width:22px;text-align:center;padding:2px 6px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;margin:2px 4px 2px 0}
+    .user-list{max-height:360px;overflow:auto;padding-right:6px}
+    .user-item{border-bottom:1px dashed #e5e7eb;padding:8px 0}
+    .user-name{font-weight:600}
+    .nums{margin-top:6px;font-size:13px;line-height:1.6}
+    .nums .n{display:inline-block;min-width:22px;text-align:center;padding:2px 6px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;margin:2px 4px 2px 0}
 
     .maint-bar{display:none;gap:8px;align-items:center;justify-content:space-between;margin-top:8px;padding:8px 12px;border-radius:12px;background:#fffbeb;border:1px solid #fde68a;color:#7c2d12}
     .maint-on .maint-bar{display:flex}
@@ -58,6 +68,7 @@
     .maint-off .cell{cursor:default}
   </style>
 </head>
+
 <body>
   <div class="container">
     <header style="display:flex;gap:16px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px;">
@@ -97,7 +108,6 @@
         </div>
       </div>
     </section>
-
     <section class="row" style="gap:12px;">
       <div class="card" style="min-height:260px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
@@ -109,6 +119,7 @@
         </div>
         <div id="board"></div>
       </div>
+
       <div class="card">
         <h2 style="margin:0 0 8px;font-size:18px;">投稿者別 取得リスト</h2>
         <div class="muted" style="margin-bottom:6px;">（確保済みの番号を投稿者ごとに集計表示）</div>
@@ -119,8 +130,11 @@
     <section class="row" style="margin-top:12px;gap:12px;">
       <div class="card">
         <h2 style="margin:0 0 8px;font-size:18px;">投稿ログ</h2>
-        <div class="logs" id="logs"><div class="muted">投稿はまだありません。</div></div>
+        <div class="logs" id="logs">
+          <div class="muted">投稿はまだありません。</div>
+        </div>
       </div>
+
       <div class="card">
         <h2 style="margin:0 0 8px;font-size:18px;">使い方メモ</h2>
         <ul style="margin:0 0 6px 2px;font-size:14px;color:#374151;">
@@ -133,14 +147,39 @@
       </div>
     </section>
   </div>
-
   <script>
   (function(){
     const BOARD_SIZE=55, MAX_SLOTS=4, TILE=34;
-    const LS_KEY='nb_html_custom_users_inc_commas_nospace_tight_stacked_state';
-    const LS_USER='nb_html_custom_users_inc_commas_nospace_tight_stacked_user';
-    const BC_CH='nb_html_custom_users_inc_commas_nospace_tight_stacked_channel';
 
+    // サーバから取得する状態
+    let state = {
+      remaining: [],
+      owners: {},
+      logs: [],
+      lastUpdate: 0
+    };
+
+    const elBoard=document.getElementById('board');
+    const elLogs=document.getElementById('logs');
+    const elReply=document.getElementById('reply');
+    const elLast=document.getElementById('lastUpdate');
+    const inUser=document.getElementById('inUser');
+    const inNums=document.getElementById('inNums');
+    const btnPost=document.getElementById('btnPost');
+    const btnReset=document.getElementById('btnReset');
+    const btnMaint=document.getElementById('btnMaint');
+    const elMaintBar=document.getElementById('maintBar');
+    const elUserAlloc=document.getElementById('userAlloc');
+
+const elStat = {
+  0: document.getElementById('stat0'),
+  1: document.getElementById('stat1'),
+  2: document.getElementById('stat2'),
+  3: document.getElementById('stat3'),
+  4: document.getElementById('stat4')
+};
+
+    // レイアウト定義（あなたの元コードそのまま）
     const LAYOUT=[
       [0,42,0.5,0,0,0.5,0,0,0.5,0,55],
       [40,41,0.5,45,46,0.5,49,50,0.5,53,54],
@@ -156,124 +195,365 @@
       [1,2,0.5,8,9,0.5,13,14,0.5,0,0],
     ];
 
-const colWidths = LAYOUT[0].map(v => v === 0.5 ? TILE * 0.5 : TILE);
+    const colWidths = LAYOUT[0].map(v => v === 0.5 ? TILE * 0.5 : TILE);
 
-    const elBoard=document.getElementById('board');
-    const elLogs=document.getElementById('logs');
-    const elReply=document.getElementById('reply');
-    const elLast=document.getElementById('lastUpdate');
-    const inUser=document.getElementById('inUser');
-    const inNums=document.getElementById('inNums');
-    const btnPost=document.getElementById('btnPost');
-    const btnReset=document.getElementById('btnReset');
-    const btnMaint=document.getElementById('btnMaint');
-    const elMaintBar=document.getElementById('maintBar');
-    const elUserAlloc=document.getElementById('userAlloc');
-    const elStat={0:stat0,1:stat1,2:stat2,3:stat3,4:stat4};
-
-    function makeInitialRemaining(){const a=new Array(BOARD_SIZE+1).fill(MAX_SLOTS);a[0]=-1;return a}
-    function makeInitialOwners(){const o={};for(let i=1;i<=BOARD_SIZE;i++)o[i]=[];return o}
-
-    function loadState(){try{const raw=localStorage.getItem(LS_KEY);if(raw){const p=JSON.parse(raw);if(Array.isArray(p.remaining)&&p.remaining.length===BOARD_SIZE+1){if(!p.owners)p.owners=makeInitialOwners();return p}}}catch(e){}return{remaining:makeInitialRemaining(),logs:[],lastUpdate:Date.now(),owners:makeInitialOwners()}}
-    function saveState(st){localStorage.setItem(LS_KEY,JSON.stringify(st))}
-    function formatTime(ts){const d=new Date(ts),pad=n=>String(n).padStart(2,'0');return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`}
-
-    let state=loadState();
-    try{inUser.value=localStorage.getItem(LS_USER)||'匿名'}catch(e){}
-    inUser.addEventListener('input',()=>{try{localStorage.setItem(LS_USER,inUser.value||'匿名')}catch(e){}})
-
-    let bc=null;try{bc=new BroadcastChannel(BC_CH)}catch(e){}
-    if(bc){bc.onmessage=ev=>{const m=ev.data||{};if(m.type==='state'&&typeof m.lastUpdate==='number'){if(m.lastUpdate>state.lastUpdate){state=m;renderAll()}}}}
-    function broadcast(){if(bc)bc.postMessage({type:'state',...state})}
-
-    // Board grid (tile 60px, gap 4px)
-    elBoard.innerHTML='';elBoard.style.display='grid';
-    const maxCols=Math.max.apply(null,LAYOUT.map(r=>r.length));
+    // board 初期化
+    elBoard.innerHTML='';
+    elBoard.style.display='grid';
     elBoard.style.gridTemplateColumns = colWidths.map(w => w + 'px').join(' ');
     elBoard.style.columnGap='0px';
     elBoard.style.rowGap='0px';
     elBoard.style.justifyContent='start';
 
     const cells=[];
-for(const row of LAYOUT){
-  for(const n of row){
-    const d=document.createElement('div');
+    for(const row of LAYOUT){
+      for(const n of row){
+        const d=document.createElement('div');
 
-    // 0.5 → 半マス空き
-    if(n === 0.5){
-      d.style.width = (TILE * 0.5) + 'px';
-      d.style.height = TILE + 'px';
-      d.style.visibility = 'hidden';
-      d.style.border = 'none';
-      elBoard.appendChild(d);
-      continue;
+        // 半マス
+        if(n === 0.5){
+          d.style.width = (TILE * 0.5) + 'px';
+          d.style.height = TILE + 'px';
+          d.style.visibility = 'hidden';
+          d.style.border = 'none';
+          elBoard.appendChild(d);
+          continue;
+        }
+
+        // 空白マス
+        if(n === 0){
+          d.style.width = TILE + 'px';
+          d.style.height = TILE + 'px';
+          d.style.visibility = 'hidden';
+          d.style.border = 'none';
+          elBoard.appendChild(d);
+          continue;
+        }
+
+        // 通常セル
+        d.className='cell bg-4';
+        d.style.width = TILE + 'px';
+        d.style.height = TILE + 'px';
+        d.title=n+'番';
+
+        const inner=document.createElement('div');
+        inner.className='cell-inner';
+
+        const num=document.createElement('div');
+        num.className='num';
+        num.textContent=String(n);
+
+        const sub=document.createElement('div');
+        sub.className='sub';
+        sub.textContent='空き4';
+
+        inner.appendChild(num);
+        inner.appendChild(sub);
+        d.appendChild(inner);
+        elBoard.appendChild(d);
+
+        cells[n]={root:d,sub};
+      }
     }
 
-    // 0 → 1マス空き
-    if(n === 0){
-      d.style.width = TILE + 'px';
-      d.style.height = TILE + 'px';
-      d.style.visibility = 'hidden';
-      d.style.border = 'none';
-      elBoard.appendChild(d);
-      continue;
+    // 色クラス
+    function colorClassByRemaining(rem){
+      switch(rem){
+        case 4:return'bg-4';
+        case 3:return'bg-3';
+        case 2:return'bg-2';
+        case 1:return'bg-1';
+        default:return'bg-0';
+      }
+    }
+    /* ------------------------------
+       描画処理
+    ------------------------------ */
+
+    function renderBoard(){
+      for(let n=1;n<=BOARD_SIZE;n++){
+        const c=cells[n];
+        if(!c) continue;
+        const rem = state.remaining[n];
+        c.root.className = 'cell ' + colorClassByRemaining(rem);
+        c.sub.textContent = rem === 0 ? '空き0' : '空き' + rem;
+        c.root.title = `${n}番: ${c.sub.textContent}`;
+      }
     }
 
-    // 通常の番号セル
-    d.className='cell bg-4';
-    d.style.width = TILE + 'px';
-    d.style.height = TILE + 'px';
-    d.title=n+'番';
+    function renderStats(){
+      const cnt={0:0,1:0,2:0,3:0,4:0};
+      for(let i=1;i<=BOARD_SIZE;i++){
+        cnt[state.remaining[i]]++;
+      }
+      elStat[0].textContent='空き0: '+cnt[0]+'件';
+      elStat[1].textContent='空き1: '+cnt[1]+'件';
+      elStat[2].textContent='空き2: '+cnt[2]+'件';
+      elStat[3].textContent='空き3: '+cnt[3]+'件';
+      elStat[4].textContent='空き4: '+cnt[4]+'件';
+    }
 
-    const inner=document.createElement('div');
-    inner.className='cell-inner';
+    function formatTime(ts){
+      const d=new Date(ts);
+      const pad=n=>String(n).padStart(2,'0');
+      return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
 
-    const num=document.createElement('div');
-    num.className='num';
-    num.textContent=String(n);
+    function renderLogs(){
+      const logs = state.logs || [];
+      elLogs.innerHTML = '';
 
-    const sub=document.createElement('div');
-    sub.className='sub';
-    sub.textContent='空き4';
+      if(logs.length === 0){
+        const d=document.createElement('div');
+        d.className='muted';
+        d.textContent='投稿はまだありません。';
+        elLogs.appendChild(d);
+        return;
+      }
 
-    inner.appendChild(num);
-    inner.appendChild(sub);
-    d.appendChild(inner);
-    elBoard.appendChild(d);
+      for(const l of logs){
+        const item=document.createElement('div');
+        item.className='log-item';
 
-    cells[n]={root:d,sub};
-  }
-}
-    function colorClassByRemaining(rem){switch(rem){case 4:return'bg-4';case 3:return'bg-3';case 2:return'bg-2';case 1:return'bg-1';default:return'bg-0'}}
-    function renderBoard(){for(let n=1;n<=BOARD_SIZE;n++){const c=cells[n];if(!c)continue;const rem=state.remaining[n];c.root.className='cell '+colorClassByRemaining(rem);c.sub.textContent=rem===0?'空き0':'空き'+rem;c.root.title=n+'番: '+(rem===0?'空き0':'空き'+rem)}}
-    function renderStats(){const cnt={0:0,1:0,2:0,3:0,4:0};for(let i=1;i<=BOARD_SIZE;i++)cnt[state.remaining[i]]++;elStat[0].textContent='空き0: '+cnt[0]+'件';elStat[1].textContent='空き1: '+cnt[1]+'件';elStat[2].textContent='空き2: '+cnt[2]+'件';elStat[3].textContent='空き3: '+cnt[3]+'件';elStat[4].textContent='空き4: '+cnt[4]+'件'}
-    function renderLogs(){const logs=state.logs||[];elLogs.innerHTML='';if(logs.length===0){const d=document.createElement('div');d.className='muted';d.textContent='投稿はまだありません。';elLogs.appendChild(d);return}for(const l of logs){const item=document.createElement('div');item.className='log-item';const head=document.createElement('div');head.className='muted';head.textContent=formatTime(l.at)+' ・ '+(l.user||'匿名');const body=document.createElement('div');for(const r of (l.results||[])){const b=document.createElement('span');b.className='badge '+(r.ok?'badge-ok':'badge-ng');if(r.type==='inc')b.textContent=r.ok?`${r.number} 空きを+1`:`${r.number} 既に空き4`;else if(r.type==='err')b.textContent=`エラー: ${r.msg}`;else b.textContent=r.ok?(r.number+' 取得'):(r.number+(r.reason==='dup'?' 重複不可':' 番なし'));body.appendChild(b)}item.appendChild(head);item.appendChild(body);elLogs.appendChild(item)}}
-    function renderMeta(){elLast.textContent='最終更新: '+formatTime(state.lastUpdate)}
-    function renderUserAlloc(){const map=new Map();for(let n=1;n<=BOARD_SIZE;n++){const arr=state.owners[n]||[];arr.forEach(u=>{const k=u||'匿名';if(!map.has(k))map.set(k,[]);map.get(k).push(n)})}const users=Array.from(map.keys()).sort((a,b)=>a.localeCompare(b,'ja'));elUserAlloc.innerHTML='';if(users.length===0){const d=document.createElement('div');d.className='muted';d.textContent='確保済みの番号はまだありません。';elUserAlloc.appendChild(d);return}for(const u of users){const wrap=document.createElement('div');wrap.className='user-item';const name=document.createElement('div');name.className='user-name';name.textContent=`${u}（${map.get(u).length}件）`;const nums=document.createElement('div');nums.className='nums';for(const n of map.get(u).slice().sort((x,y)=>x-y)){const s=document.createElement('span');s.className='n';s.textContent=String(n);nums.appendChild(s)}wrap.appendChild(name);wrap.appendChild(nums);elUserAlloc.appendChild(wrap)}}
-    function renderAll(){saveState(state);renderBoard();renderStats();renderLogs();renderMeta();renderUserAlloc()}
+        const head=document.createElement('div');
+        head.className='muted';
+        head.textContent = `${formatTime(l.at)} ・ ${l.user || '匿名'}`;
 
-    // Parsing
-    function parseInput(raw){const s=String(raw||'').trim();if(!s)return{mode:'take',numbers:[],err:null};if(/^-[\s]/.test(s))return{mode:'err',numbers:[],err:'管理投稿は「-」の直後にスペースを入れないでください（例: -5,12）'};if(s.startsWith('-')){const payload=s.slice(1);if(payload.includes(' '))return{mode:'err',numbers:[],err:'管理投稿はカンマのみで区切ってください（空白不可）'};const parts=payload.split(',').map(x=>x.trim()).filter(Boolean);const nums=parts.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);return{mode:'inc',numbers:nums,err:null}}if(/\s/.test(s))return{mode:'err',numbers:[],err:'通常投稿はカンマ区切りのみ使用できます（空白不可）'};const parts=s.split(',').map(x=>x.trim()).filter(Boolean);const unique=[...new Set(parts.map(Number))].filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);return{mode:'take',numbers:unique,err:null}}
+        const body=document.createElement('div');
+        for(const r of (l.results || [])){
+          const b=document.createElement('span');
+          b.className='badge ' + (r.ok ? 'badge-ok' : 'badge-ng');
 
-    function addLog(results, uname){const now=Date.now();const log={id:String(now)+Math.random().toString(36).slice(2,8),at:now,user:uname,results};state={...state,logs:[log,...(state.logs||[])].slice(0,300),lastUpdate:now}}
+          if(r.type === 'inc'){
+            b.textContent = r.ok ? `${r.number} 空きを+1` : `${r.number} 既に空き4`;
+          } else if(r.type === 'err'){
+            b.textContent = `エラー: ${r.msg}`;
+          } else {
+            b.textContent = r.ok
+              ? `${r.number} 取得`
+              : `${r.number}${r.reason==='dup'?' 重複不可':' 番なし'}`;
+          }
+          body.appendChild(b);
+        }
 
-    function post(){const parsed=parseInput(inNums.value);if(parsed.mode==='err'){addLog([{type:'err',ok:false,msg:parsed.err}], 'SYSTEM');elReply.innerHTML='<span class="reply">'+parsed.err+'</span>';renderAll();return}if(parsed.numbers.length===0){elReply.innerHTML='<span class="reply">有効な番号(1-55)を入力してください。</span>';return}
-      const newRemaining=state.remaining.slice();const owners=JSON.parse(JSON.stringify(state.owners||{}));const results=[];let uname=inUser.value||'匿名';
-      if(parsed.mode==='inc'){uname='SYSTEM';for(const n of parsed.numbers){if(newRemaining[n]<MAX_SLOTS){newRemaining[n]+=1;results.push({type:'inc',number:n,ok:true})}else{results.push({type:'inc',number:n,ok:false})}}state={remaining:newRemaining,logs:state.logs,lastUpdate:state.lastUpdate,owners};addLog(results,uname);const ng=results.filter(r=>!r.ok).map(r=>r.number);elReply.innerHTML=ng.length?`<span class="reply">${ng.join(', ')} は既に空き4でした</span>`:'<span class="reply">指定番号の空きを +1 しました (SYSTEM)</span>';renderAll();inNums.value='';return}
-      for(const n of parsed.numbers){const arr=owners[n]||[];if(arr.includes(uname)){results.push({number:n,ok:false,reason:'dup'});continue}if(newRemaining[n]>0){newRemaining[n]-=1;results.push({number:n,ok:true});if(!owners[n])owners[n]=[];owners[n].push(uname);if(owners[n].length>MAX_SLOTS)owners[n]=owners[n].slice(0,MAX_SLOTS)}else{results.push({number:n,ok:false})}}
-      state={remaining:newRemaining,logs:state.logs,lastUpdate:state.lastUpdate,owners};addLog(results,uname);const denied=results.filter(r=>!r.ok).map(r=>r.number+(r.reason==='dup'?'(重複)':''));elReply.innerHTML=denied.length>0?'<span class="reply">'+denied.join(', ')+' を確保できませんでした</span>':'<span class="reply">全て取得できました</span>';renderAll();inNums.value=''}
+        item.appendChild(head);
+        item.appendChild(body);
+        elLogs.appendChild(item);
+      }
+    }
 
-    function resetAll(){if(!confirm('全番号を空き0にします。よろしいですか?'))return;const rem=new Array(BOARD_SIZE+1).fill(0);rem[0]=-1;const owners=makeInitialOwners();state={remaining:rem,logs:state.logs,lastUpdate:state.lastUpdate,owners};addLog([], 'SYSTEM');elReply.innerHTML='<span class="reply">全て空き0に設定しました（SYSTEM）</span>';renderAll()}
+    function renderMeta(){
+      elLast.textContent = '最終更新: ' + formatTime(state.lastUpdate);
+    }
 
-    // Maintenance
-    let maint=false;function setMaint(on){maint=!!on;document.body.classList.toggle('maint-on',maint);document.body.classList.toggle('maint-off',!maint);elMaintBar.style.display=maint?'flex':'none';btnMaint.textContent=maint?'メンテ（ON）':'メンテ'}
-    function handleCellClick(n){if(!maint)return;if(n<1||n>BOARD_SIZE)return;if(state.remaining[n]>=MAX_SLOTS){elReply.innerHTML='<span class="reply">'+n+' は既に空き4です</span>';return}const newRemaining=state.remaining.slice();newRemaining[n]+=1;state={...state,remaining:newRemaining};addLog([{type:'inc',number:n,ok:true}], 'SYSTEM');elReply.innerHTML='<span class="reply">'+n+' の空きを +1 しました (SYSTEM)</span>';renderAll()}
+    function renderUserAlloc(){
+      const map=new Map();
+      for(let n=1;n<=BOARD_SIZE;n++){
+        const arr = state.owners[n] || [];
+        arr.forEach(u=>{
+          const k=u||'匿名';
+          if(!map.has(k)) map.set(k,[]);
+          map.get(k).push(n);
+        });
+      }
 
-    function bindCellHandlers(){for(let n=1;n<=BOARD_SIZE;n++){const c=cells[n];if(!c)continue;c.root.onclick=()=>handleCellClick(n)}}
+      const users = Array.from(map.keys()).sort((a,b)=>a.localeCompare(b,'ja'));
+      elUserAlloc.innerHTML='';
 
-    btnPost.addEventListener('click',post);btnReset.addEventListener('click',resetAll);btnMaint.addEventListener('click',()=>setMaint(!maint));inNums.addEventListener('keydown',e=>{if(e.key==='Enter')post()});
+      if(users.length===0){
+        const d=document.createElement('div');
+        d.className='muted';
+        d.textContent='確保済みの番号はまだありません。';
+        elUserAlloc.appendChild(d);
+        return;
+      }
 
-    bindCellHandlers();setMaint(false);renderAll();
+      for(const u of users){
+        const wrap=document.createElement('div');
+        wrap.className='user-item';
+
+        const name=document.createElement('div');
+        name.className='user-name';
+        name.textContent = `${u}（${map.get(u).length}件）`;
+
+        const nums=document.createElement('div');
+        nums.className='nums';
+
+        for(const n of map.get(u).slice().sort((x,y)=>x-y)){
+          const s=document.createElement('span');
+          s.className='n';
+          s.textContent=String(n);
+          nums.appendChild(s);
+        }
+
+        wrap.appendChild(name);
+        wrap.appendChild(nums);
+        elUserAlloc.appendChild(wrap);
+      }
+    }
+
+    function renderAll(){
+      renderBoard();
+      renderStats();
+      renderLogs();
+      renderMeta();
+      renderUserAlloc();
+    }
+
+    /* ------------------------------
+       サーバ同期
+    ------------------------------ */
+
+    async function fetchStateFromServer(){
+      try{
+        const res = await fetch('/state');
+        const st = await res.json();
+        state = st;
+        renderAll();
+      }catch(e){
+        console.error('state取得失敗', e);
+      }
+    }
+
+    // 1秒ごとに同期
+    fetchStateFromServer();
+    setInterval(fetchStateFromServer, 1000);
+
+    /* ------------------------------
+       投稿処理
+    ------------------------------ */
+
+    function parseInput(raw){
+      const s=String(raw||'').trim();
+      if(!s) return {mode:'take',numbers:[],err:null};
+
+      if(/^-[\s]/.test(s))
+        return {mode:'err',numbers:[],err:'管理投稿は「-」の直後にスペースを入れないでください（例: -5,12）'};
+
+      if(s.startsWith('-')){
+        const payload=s.slice(1);
+        if(payload.includes(' '))
+          return {mode:'err',numbers:[],err:'管理投稿はカンマのみで区切ってください（空白不可）'};
+        const parts=payload.split(',').map(x=>x.trim()).filter(Boolean);
+        const nums=parts.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);
+        return {mode:'inc',numbers:nums,err:null};
+      }
+
+      if(/\s/.test(s))
+        return {mode:'err',numbers:[],err:'通常投稿はカンマ区切りのみ使用できます（空白不可）'};
+
+      const parts=s.split(',').map(x=>x.trim()).filter(Boolean);
+      const unique=[...new Set(parts.map(Number))].filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);
+      return {mode:'take',numbers:unique,err:null};
+    }
+
+    async function post(){
+      const parsed=parseInput(inNums.value);
+
+      if(parsed.mode==='err'){
+        elReply.innerHTML='<span class="reply">'+parsed.err+'</span>';
+        return;
+      }
+
+      if(parsed.numbers.length===0){
+        elReply.innerHTML='<span class="reply">有効な番号(1-55)を入力してください。</span>';
+        return;
+      }
+
+      const body = {
+        mode: parsed.mode,
+        numbers: parsed.numbers,
+        user: inUser.value || '匿名'
+      };
+
+      const res = await fetch('/post', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+
+      const st = await res.json();
+      state = st;
+      renderAll();
+      inNums.value='';
+    }
+
+    /* ------------------------------
+       全リセット
+    ------------------------------ */
+
+    async function resetAll(){
+      if(!confirm('全番号を空き0にします。よろしいですか?')) return;
+
+      const res = await fetch('/reset', {method:'POST'});
+      const st = await res.json();
+      state = st;
+      renderAll();
+      elReply.innerHTML='<span class="reply">全て空き0に設定しました（SYSTEM）</span>';
+    }
+
+    /* ------------------------------
+       メンテナンスモード
+    ------------------------------ */
+
+    let maint=false;
+
+    function setMaint(on){
+      maint = !!on;
+      document.body.classList.toggle('maint-on', maint);
+      document.body.classList.toggle('maint-off', !maint);
+      elMaintBar.style.display = maint ? 'flex' : 'none';
+      btnMaint.textContent = maint ? 'メンテ（ON）' : 'メンテ';
+    }
+
+    async function handleCellClick(n){
+      if(!maint) return;
+      if(n<1 || n>BOARD_SIZE) return;
+
+      if(state.remaining[n] >= MAX_SLOTS){
+        elReply.innerHTML='<span class="reply">'+n+' は既に空き4です</span>';
+        return;
+      }
+
+      // メンテは SYSTEM として +1
+      const body = {
+        mode: 'inc',
+        numbers: [n],
+        user: 'SYSTEM'
+      };
+
+      const res = await fetch('/post', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+
+      const st = await res.json();
+      state = st;
+      renderAll();
+      elReply.innerHTML='<span class="reply">'+n+' の空きを +1 しました (SYSTEM)</span>';
+    }
+
+    function bindCellHandlers(){
+      for(let n=1;n<=BOARD_SIZE;n++){
+        const c=cells[n];
+        if(!c) continue;
+        c.root.onclick = ()=>handleCellClick(n);
+      }
+    }
+
+    /* ------------------------------
+       イベント登録
+    ------------------------------ */
+
+    btnPost.addEventListener('click', post);
+    btnReset.addEventListener('click', resetAll);
+    btnMaint.addEventListener('click', ()=>setMaint(!maint));
+    inNums.addEventListener('keydown', e=>{ if(e.key==='Enter') post(); });
+
+    bindCellHandlers();
+    setMaint(false);
+
   })();
   </script>
 </body>
