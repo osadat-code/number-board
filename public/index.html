@@ -172,8 +172,8 @@
     elBoard.innerHTML='';elBoard.style.display='grid';
     const maxCols=Math.max.apply(null,LAYOUT.map(r=>r.length));
     elBoard.style.gridTemplateColumns=`repeat(${maxCols}, ${TILE}px)`;
-    elBoard.style.columnGap='1px';
-    elBoard.style.rowGap='1px';
+    elBoard.style.columnGap='0px';
+    elBoard.style.rowGap='0px';
     elBoard.style.justifyContent='start';
 
     const cells=[];
