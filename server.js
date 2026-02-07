@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-const DB_FILE = './state.json';
+// const DB_FILE = './state.json';
+const DB_FILE = '/tmp/state.json';
 const BOARD_SIZE = 55;
 const MAX_SLOTS = 4;
 
