@@ -557,6 +557,20 @@ async function handleCellClick(n){
   renderAll();
   elReply.innerHTML='<span class="reply">'+n+' の空きを +1 しました (SYSTEM)</span>';
 }
+
+/* ------------------------------
+   現在時刻の表示
+------------------------------ */
+function updateNowTime(){
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const t = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  document.getElementById('nowTime').textContent = '現在時刻: ' + t;
+}
+
+setInterval(updateNowTime, 1000);
+updateNowTime();
+
     function bindCellHandlers(){
       for(let n=1;n<=BOARD_SIZE;n++){
         const c=cells[n];
