@@ -3,13 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-// const DB_FILE = './state.json';
 const DB_FILE = '/tmp/state.json';
 const BOARD_SIZE = 55;
 const MAX_SLOTS = 4;
 
 app.use(express.json());
-app.use(express.static('public')); // ← public/index.html を配信
+app.use(express.static('public'));
 
 // ------------------------------
 // 状態ロード / 保存
@@ -34,14 +33,14 @@ function saveState(st) {
 }
 
 // ------------------------------
-// API: 現在の状態を返す
+// API: 現在の状態
 // ------------------------------
 app.get('/state', (req, res) => {
   res.json(loadState());
 });
 
 // ------------------------------
-// API: 投稿（通常 / 管理）
+// API: 投稿
 // ------------------------------
 app.post('/post', (req, res) => {
   const { mode, numbers, user } = req.body;
@@ -61,7 +60,9 @@ app.post('/post', (req, res) => {
         results.push({ type: 'inc', number: n, ok: false });
       }
     });
-  } else if (mode === 'take') {
+  }
+
+  else if (mode === 'take') {
     numbers.forEach(n => {
       if (owners[n].includes(uname)) {
         results.push({ number: n, ok: false, reason: 'dup' });
@@ -72,6 +73,15 @@ app.post('/post', (req, res) => {
       } else {
         results.push({ number: n, ok: false });
       }
+    });
+  }
+
+  // ★ 追加：青→白にするための set0
+  else if (mode === 'set0') {
+    numbers.forEach(n => {
+      newRemaining[n] = 0;
+      owners[n] = [];
+      results.push({ type: 'set0', number: n, ok: true });
     });
   }
 

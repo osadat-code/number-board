@@ -506,34 +506,56 @@ const elStat = {
       btnMaint.textContent = maint ? 'メンテ（ON）' : 'メンテ';
     }
 
-    async function handleCellClick(n){
-      if(!maint) return;
-      if(n<1 || n>BOARD_SIZE) return;
+async function handleCellClick(n){
+  if(!maint) return;
+  if(n<1 || n>BOARD_SIZE) return;
 
-      if(state.remaining[n] >= MAX_SLOTS){
-        elReply.innerHTML='<span class="reply">'+n+' は既に空き4です</span>';
-        return;
-      }
+  const rem = state.remaining[n];
 
-      // メンテは SYSTEM として +1
-      const body = {
-        mode: 'inc',
-        numbers: [n],
-        user: 'SYSTEM'
-      };
+  // ★ 青（空き4）なら白（空き0）にする
+  if(rem === MAX_SLOTS){
+    const body = {
+      mode: 'set0',
+      numbers: [n],
+      user: 'SYSTEM'
+    };
 
-      const res = await fetch('/post', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(body)
-      });
+    const res = await fetch('/post', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
 
-      const st = await res.json();
-      state = st;
-      renderAll();
-      elReply.innerHTML='<span class="reply">'+n+' の空きを +1 しました (SYSTEM)</span>';
-    }
+    const st = await res.json();
+    state = st;
+    renderAll();
+    elReply.innerHTML='<span class="reply">'+n+' を空き0にしました (SYSTEM)</span>';
+    return;
+  }
 
+  // 通常の +1
+  if(rem >= MAX_SLOTS){
+    elReply.innerHTML='<span class="reply">'+n+' は既に空き4です</span>';
+    return;
+  }
+
+  const body = {
+    mode: 'inc',
+    numbers: [n],
+    user: 'SYSTEM'
+  };
+
+  const res = await fetch('/post', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+
+  const st = await res.json();
+  state = st;
+  renderAll();
+  elReply.innerHTML='<span class="reply">'+n+' の空きを +1 しました (SYSTEM)</span>';
+}
     function bindCellHandlers(){
       for(let n=1;n<=BOARD_SIZE;n++){
         const c=cells[n];
