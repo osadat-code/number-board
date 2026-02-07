@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>番号スロット管理ボード(1-55)｜フル機能版・最小横スペース（60px / gap 4px）｜入力欄縦並び＋メンテ短縮</title>
+  <title>Blitz支援基地管理ボード(1-55)</title>
   <style>
     :root { --bg:#f8fafc; --fg:#111827; --muted:#6b7280; --card:#ffffff; --bd:#e5e7eb; --blue:#3b82f6; --blue-dark:#2563eb; --green:#22c55e; --green-dark:#16a34a; --red:#ef4444; --red-dark:#dc2626; --gray:#d1d5db; --gray-dark:#9ca3af; --white:#ffffff; --amber:#f59e0b; }
     html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans JP,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"}
     .container{max-width:1280px;margin:0 auto;padding:16px}
     h1{font-size:24px;margin:0 0 4px}.muted{color:var(--muted);font-size:12px}
     .legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.legend-item{display:flex;align-items:center;gap:6px;font-size:12px}.legend-swatch{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.1)}
-    .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:4px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+    .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:8px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 
     /* ------- Inputs layout: stack vertically ------- */
     .toolbar{display:grid;grid-template-columns: 1fr;grid-auto-rows:auto;row-gap:10px}
@@ -123,7 +123,7 @@
       </div>
       <div class="card">
         <h2 style="margin:0 0 8px;font-size:18px;">使い方メモ</h2>
-        <ul style="margin:0 0 6px 18px;font-size:14px;color:#374151;">
+        <ul style="margin:0 0 6px 8px;font-size:14px;color:#374151;">
           <li>通常投稿：<strong>カンマ区切りのみ</strong>（空白不可）。例：<code>5,12,27</code></li>
           <li>管理投稿：<strong>先頭をスペース無しの「-」で開始</strong>し、後は <strong>カンマ区切りのみ</strong>。例：<code>-5,5,12</code> → 5を+2、12を+1（最大4）。</li>
           <li><strong>「- 5,12」など、マイナスの直後にスペースがある投稿はエラー</strong>として拒否します。</li>
