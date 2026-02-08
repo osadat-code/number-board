@@ -325,6 +325,8 @@ const elStat = {
             b.textContent = r.ok ? `${r.number} 空きを+1` : `${r.number} 既に空き4`;
           } else if(r.type === 'err'){
             b.textContent = `エラー: ${r.msg}`;
+          } else if(r.type === 'reset'){
+             b.textContent = "全リセットしました";
           } else {
             b.textContent = r.ok ? `${r.number} 取得` : `${r.number}${r.reason==='dup'?' 重複不可':' 番なし'}`;
           }
@@ -438,16 +440,22 @@ const elStat = {
 
     async function resetAll(){
       if(!confirm('全番号を空き0にします。よろしいですか?')) return;
-      const res = await fetch('/reset', {method:'POST'});
+      
+      // サーバー側のリセット実行
+      await fetch('/reset', {method:'POST'});
+      
+      // ログに「全リセットしました」を残すための特殊投稿
+      const body = { mode: 'reset_log', numbers: [], user: 'SYSTEM' };
+      const res = await fetch('/post', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      
       const st = await res.json();
       state = st;
-      renderAll();
-
-      // ★ メンテ実行済みリストをクリア
+      
+      // メンテ実行済みリストをクリア
       maintUsed.clear();
-      // もし現在メンテONならボタンをリセット表示にするため再描画
       if(maint) setMaint(true);
 
+      renderAll();
       elReply.innerHTML='<span class="reply">全て空き0に設定しました（SYSTEM）</span>';
     }
 
@@ -471,7 +479,7 @@ const elStat = {
       const body = {
         mode: 'inc',
         numbers: nums,
-        user: name + 'さんお休み'
+        user: name + 'さんお休み' // ★ ここで指定した名前が取得リストに載ります
       };
 
       const res = await fetch('/post', {
@@ -504,8 +512,6 @@ const elStat = {
       elMaintBar.style.display = maint ? 'flex' : 'none';
       btnMaint.textContent = maint ? 'メンテ（ON）' : 'メンテ';
 
-      // ★ ご要望により、メンテOFF時に maintUsed.clear() をしないように修正
-
       const wrap = document.getElementById('maintButtons');
       wrap.innerHTML = '';
       if(maint){
@@ -513,10 +519,9 @@ const elStat = {
           const b = document.createElement('button');
           b.className = 'btn';
           b.textContent = name;
-          b.setAttribute("data-name", name); // グレーアウト特定用
+          b.setAttribute("data-name", name);
           b.onclick = ()=>maintGroupInc(name);
 
-          // すでに実行済みなら最初からグレーアウト
           if(maintUsed.has(name)){
             b.disabled = true;
             b.style.opacity = "0.5";
