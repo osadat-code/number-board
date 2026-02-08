@@ -55,6 +55,11 @@ app.post('/post', (req, res) => {
     numbers.forEach(n => {
       if (newRemaining[n] < MAX_SLOTS) {
         newRemaining[n]++;
+
+      // ★★★ ここを追加 ★★★
+      if (!owners[n]) owners[n] = [];
+      owners[n].push(uname);
+
         results.push({ type: 'inc', number: n, ok: true });
       } else {
         results.push({ type: 'inc', number: n, ok: false });
