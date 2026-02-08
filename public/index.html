@@ -438,26 +438,25 @@ const elStat = {
       inNums.value='';
     }
 
-    async function resetAll(){
-      if(!confirm('全番号を空き0にします。よろしいですか?')) return;
-      
-      // サーバー側のリセット実行
-      await fetch('/reset', {method:'POST'});
-      
-      // ログに「全リセットしました」を残すための特殊投稿
-      const body = { mode: 'reset_log', numbers: [], user: 'SYSTEM' };
-      const res = await fetch('/post', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-      
-      const st = await res.json();
-      state = st;
-      
-      // メンテ実行済みリストをクリア
-      maintUsed.clear();
-      if(maint) setMaint(true);
+async function resetAll(){
+  if(!confirm('全番号を空き0にします。よろしいですか?')) return;
 
-      renderAll();
-      elReply.innerHTML='<span class="reply">全て空き0に設定しました（SYSTEM）</span>';
-    }
+  // サーバー側のリセット実行（ここでログ1行が作られる）
+  await fetch('/reset', {method:'POST'});
+
+  // ★ reset_log を送らない（削除）
+
+  // 最新状態を取得
+  const res = await fetch('/state');
+  state = await res.json();
+
+  maintUsed.clear();
+  if(maint) setMaint(true);
+
+  renderAll();
+  elReply.innerHTML='<span class="reply">全て空き0に設定しました（SYSTEM）</span>';
+}
+
 
     /* ------------------------------
        メンテナンスモード
