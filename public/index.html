@@ -99,8 +99,8 @@
           <input id="inUser" type="text" placeholder="例: 佐藤" />
         </div>
         <div class="field">
-          <label>番号（<strong>カンマ区切りのみ</strong>）｜管理: <strong>スペース無しの「-」で開始</strong></label>
-          <input id="inNums" type="text" placeholder="例: 5,12,27 ／ 管理例: -5,5,12" />
+          <label>基地番号（<strong>カンマ区切りのみ</strong>）｜空き追加: <strong>スペース無しの「-」で開始</strong></label>
+          <input id="inNums" type="text" placeholder="例: 5,12,27 ／ 空き追加例: -5,5,12" />
         </div>
         <div class="actions">
           <button class="btn btn-primary" id="btnPost">投稿</button>
@@ -112,7 +112,7 @@
         </div>
         <div id="maintBar" class="maint-bar">
         <div id="maintButtons" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
-          <div>🛠 <strong>お休み管理モード中</strong>：番号セルをクリックすると <strong>空き+1（最大4）</strong>。SYSTEMとしてログに記録されます。</div>
+          <div>🛠 <strong>お休み管理モード中</strong>：番号セルをクリックすると <strong>空き+1（最大4）</strong>。</div>
           <div><span class="muted">完了したら OFF に戻してください。</span></div>
         </div>
       </div>
@@ -146,12 +146,12 @@
 
       <div class="card">
         <h2 style="margin:0 0 8px;font-size:18px;">使い方メモ</h2>
-        <ul style="margin:0 0 6px 2px;font-size:14px;color:#374151;">
-          <li>通常投稿：<strong>カンマ区切りのみ</strong>（空白不可）。例：<code>5,12,27</code></li>
-          <li>管理投稿：<strong>先頭をスペース無しの「-」で開始</strong>し、後は <strong>カンマ区切りのみ</strong>。例：<code>-5,5,12</code> → 5を+2、12を+1（最大4）。</li>
+        <ul style="margin:0 0 6px 0px;font-size:14px;color:#374151;">
+          <li>基地取得：<strong>カンマ区切りのみ</strong>（空白不可）。例：<code>5,12,27</code></li>
+          <li>空き追加：<strong>先頭をスペース無しの「-」で開始</strong>し、後は <strong>カンマ区切りのみ</strong>。例：<code>-5,5,12</code> → 5を+2、12を+1（最大4）。</li>
           <li><strong>「- 5,12」など、マイナスの直後にスペースがある投稿はエラー</strong>として拒否します。</li>
           <li>お休み管理モード：ONの間、セルクリックで空き+1（最大4）。</li>
-          <li>全リセット：全番号を空き0に（SYSTEMログ）。</li>
+          <li>全リセット：全番号を空き0に。</li>
         </ul>
       </div>
     </section>
@@ -416,15 +416,15 @@ for(const n of map.get(u).slice().sort((x,y)=>x-y)){
     function parseInput(raw){
       const s=String(raw||'').trim();
       if(!s) return {mode:'take',numbers:[],err:null};
-      if(/^-[\s]/.test(s)) return {mode:'err',numbers:[],err:'管理投稿は「-」の直後にスペースを入れないでください（例: -5,12）'};
+      if(/^-[\s]/.test(s)) return {mode:'err',numbers:[],err:'空き追加は「-」の直後にスペースを入れないでください（例: -5,12）'};
       if(s.startsWith('-')){
         const payload=s.slice(1);
-        if(payload.includes(' ')) return {mode:'err',numbers:[],err:'管理投稿はカンマのみで区切ってください（空白不可）'};
+        if(payload.includes(' ')) return {mode:'err',numbers:[],err:'空き追加はカンマのみで区切ってください（空白不可）'};
         const parts=payload.split(',').map(x=>x.trim()).filter(Boolean);
         const nums=parts.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);
         return {mode:'inc',numbers:nums,err:null};
       }
-      if(/\s/.test(s)) return {mode:'err',numbers:[],err:'通常投稿はカンマ区切りのみ使用できます（空白不可）'};
+      if(/\s/.test(s)) return {mode:'err',numbers:[],err:'基地取得はカンマ区切りのみ使用できます（空白不可）'};
       const parts=s.split(',').map(x=>x.trim()).filter(Boolean);
       const unique=[...new Set(parts.map(Number))].filter(n=>Number.isInteger(n)&&n>=1&&n<=BOARD_SIZE);
       return {mode:'take',numbers:unique,err:null};
