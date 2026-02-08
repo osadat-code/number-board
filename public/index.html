@@ -445,6 +445,8 @@ const elStat = {
 
       // ★ メンテ実行済みリストをクリア
       maintUsed.clear();
+      // もし現在メンテONならボタンをリセット表示にするため再描画
+      if(maint) setMaint(true);
 
       elReply.innerHTML='<span class="reply">全て空き0に設定しました（SYSTEM）</span>';
     }
@@ -457,7 +459,7 @@ const elStat = {
     let maintUsed = new Set(); // メンテ中に押された名前を記録
 
     async function maintGroupInc(name){
-      // ★ 二度押し防止
+      // 二度押し防止
       if(maintUsed.has(name)){
         elReply.innerHTML = `<span class="reply">${name} はすでに実行済みです</span>`;
         return;
@@ -482,10 +484,10 @@ const elStat = {
       state = st;
       renderAll();
 
-      // ★ 実行済みに登録
+      // 実行済みに登録
       maintUsed.add(name);
 
-      // ★ ボタンをグレーアウト
+      // ボタンを即座にグレーアウト
       const btn = document.querySelector(`#maintButtons button[data-name="${name}"]`);
       if(btn){
         btn.disabled = true;
@@ -502,10 +504,7 @@ const elStat = {
       elMaintBar.style.display = maint ? 'flex' : 'none';
       btnMaint.textContent = maint ? 'メンテ（ON）' : 'メンテ';
 
-      // ★ メンテOFFでリセット
-      if(!maint){
-        maintUsed.clear();
-      }
+      // ★ ご要望により、メンテOFF時に maintUsed.clear() をしないように修正
 
       const wrap = document.getElementById('maintButtons');
       wrap.innerHTML = '';
@@ -514,10 +513,10 @@ const elStat = {
           const b = document.createElement('button');
           b.className = 'btn';
           b.textContent = name;
-          b.setAttribute("data-name", name);   // ★ 追加：グレーアウト特定用
+          b.setAttribute("data-name", name); // グレーアウト特定用
           b.onclick = ()=>maintGroupInc(name);
 
-          // すでに実行済みならグレーアウトした状態で作成
+          // すでに実行済みなら最初からグレーアウト
           if(maintUsed.has(name)){
             b.disabled = true;
             b.style.opacity = "0.5";
