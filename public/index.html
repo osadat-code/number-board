@@ -66,6 +66,13 @@
     .maint-on .maint-bar{display:flex}
     .maint-on .cell{outline:2px dashed #f59e0b; outline-offset:2px; cursor:pointer}
     .maint-off .cell{cursor:default}
+    
+    .n-rest {
+  background: #e5e7eb;   /* 明るい灰色 */
+  color: #374151;        /* 濃いめの文字色 */
+  border-color: #d1d5db; /* 薄い枠線 */
+}
+
   </style>
 </head>
 
@@ -369,12 +376,15 @@ const elStat = {
         name.textContent = `${u}（${map.get(u).length}件）`;
         const nums=document.createElement('div');
         nums.className='nums';
-        for(const n of map.get(u).slice().sort((x,y)=>x-y)){
-          const s=document.createElement('span');
-          s.className='n';
-          s.textContent=String(n);
-          nums.appendChild(s);
-        }
+for(const n of map.get(u).slice().sort((x,y)=>x-y)){
+  const s=document.createElement('span');
+
+  // ★ お休み判定を追加
+  s.className = u.includes('お休み') ? 'n n-rest' : 'n';
+
+  s.textContent=String(n);
+  nums.appendChild(s);
+}
         wrap.appendChild(name);
         wrap.appendChild(nums);
         elUserAlloc.appendChild(wrap);
