@@ -106,14 +106,14 @@ app.post('/post', (req, res) => {
 // API: ステータス変更
 // ------------------------------
 app.post('/setStatus', (req, res) => {
-  const { status } = req.body; [cite: 3]
-  const state = loadState(); [cite: 3]
+  const { status } = req.body;
+  const state = loadState();
 
-  state.status = status; [cite: 3]
-  state.lastUpdate = Date.now(); [cite: 3]
+  state.status = status;
+  state.lastUpdate = Date.now();
 
-  saveState(state); [cite: 3]
-  res.json(state); [cite: 3]
+  saveState(state);
+  res.json(state);
 });
 
 // ------------------------------
