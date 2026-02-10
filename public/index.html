@@ -187,12 +187,13 @@ const MAINT_GROUPS = {
   "hina": [1,2,3]
 };
 
-    let state = {
-      remaining: [],
-      owners: {},
-      logs: [],
-      lastUpdate: 0
-    };
+let state = {
+  remaining: [],
+  owners: {},
+  logs: [],
+  lastUpdate: 0,
+  status: "投稿待ち"   // ★ これを追加
+};
 
     const elBoard=document.getElementById('board');
     const elLogs=document.getElementById('logs');
