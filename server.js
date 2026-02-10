@@ -19,7 +19,8 @@ function loadState() {
       remaining: Array(BOARD_SIZE + 1).fill(MAX_SLOTS),
       owners: Object.fromEntries([...Array(BOARD_SIZE + 1).keys()].map(n => [n, []])),
       logs: [],
-      lastUpdate: Date.now()
+      lastUpdate: Date.now(),
+      status: "基地獲得投稿待ち"   // ★ 追加 
     };
     init.remaining[0] = -1;
     fs.writeFileSync(DB_FILE, JSON.stringify(init, null, 2));
@@ -55,11 +56,8 @@ app.post('/post', (req, res) => {
     numbers.forEach(n => {
       if (newRemaining[n] < MAX_SLOTS) {
         newRemaining[n]++;
-
-      // ★★★ ここを追加 ★★★
-      if (!owners[n]) owners[n] = [];
-      owners[n].push(uname);
-
+        if (!owners[n]) owners[n] = [];
+        owners[n].push(uname);
         results.push({ type: 'inc', number: n, ok: true });
       } else {
         results.push({ type: 'inc', number: n, ok: false });
@@ -81,7 +79,6 @@ app.post('/post', (req, res) => {
     });
   }
 
-  // ★ 追加：青→白にするための set0
   else if (mode === 'set0') {
     numbers.forEach(n => {
       newRemaining[n] = 0;
@@ -92,6 +89,7 @@ app.post('/post', (req, res) => {
 
   const now = Date.now();
   state = {
+    ...state, // 既存のstatusなどを保持
     remaining: newRemaining,
     owners,
     logs: [
@@ -100,9 +98,22 @@ app.post('/post', (req, res) => {
     ].slice(0, 300),
     lastUpdate: now
   };
-
   saveState(state);
   res.json(state);
+});
+
+// ------------------------------
+// API: ステータス変更
+// ------------------------------
+app.post('/setStatus', (req, res) => {
+  const { status } = req.body; [cite: 3]
+  const state = loadState(); [cite: 3]
+
+  state.status = status; [cite: 3]
+  state.lastUpdate = Date.now(); [cite: 3]
+
+  saveState(state); [cite: 3]
+  res.json(state); [cite: 3]
 });
 
 // ------------------------------
@@ -119,7 +130,8 @@ app.post('/reset', (req, res) => {
     remaining: rem,
     owners,
     logs: [{ at: now, user: 'SYSTEM', results: [] }],
-    lastUpdate: now
+    lastUpdate: now,
+    status: "基地獲得投稿待ち" // リセット時も初期値をセット
   };
 
   saveState(state);
