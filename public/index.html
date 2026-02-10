@@ -372,18 +372,17 @@ function renderAll(){
   renderStatus();   // ★ 追加
 }
 
-async function setStatus(s) {
+window.setStatus = async function(s) {
   await fetch('/setStatus', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ status: s })
   });
 
-  // 最新状態を取得して反映
   const res = await fetch('/state');
   state = await res.json();
   renderAll();
-}
+};
 
     function renderUserAlloc(){
       const map=new Map();
