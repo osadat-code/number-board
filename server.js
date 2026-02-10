@@ -20,7 +20,7 @@ function loadState() {
       owners: Object.fromEntries([...Array(BOARD_SIZE + 1).keys()].map(n => [n, []])),
       logs: [],
       lastUpdate: Date.now(),
-      status: "基地獲得投稿待ち"   // ★ 追加 
+      status: "投稿待ち"   // ★ 追加 
     };
     init.remaining[0] = -1;
     fs.writeFileSync(DB_FILE, JSON.stringify(init, null, 2));
@@ -131,7 +131,7 @@ app.post('/reset', (req, res) => {
     owners,
     logs: [{ at: now, user: 'SYSTEM', results: [] }],
     lastUpdate: now,
-    status: "基地獲得投稿待ち" // リセット時も初期値をセット
+    status: "投稿待ち" // リセット時も初期値をセット
   };
 
   saveState(state);

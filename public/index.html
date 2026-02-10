@@ -95,7 +95,7 @@
 <div id="statusArea" class="card" style="margin-bottom:12px;padding:10px;display:flex;align-items:center;gap:12px;">
   <div><strong>現在のステータス：</strong> <span id="statusText">--</span></div>
   <div style="margin-left:auto;display:flex;gap:8px;">
-    <button class="btn" onclick="setStatus('休憩中')">休憩中</button>
+    <button class="btn" onclick="setStatus('準備中')">準備中</button>
     <button class="btn" onclick="setStatus('お休み入力中')">お休み入力中</button>
     <button class="btn" onclick="setStatus('投稿待ち')">投稿待ち</button>
   </div>
@@ -359,7 +359,7 @@ const elStat = {
     }
 
 function renderStatus() {
-  document.getElementById("statusText").textContent = state.status || "基地獲得投稿待ち";
+  document.getElementById("statusText").textContent = state.status || "投稿待ち";
 }
 
 function renderAll(){
