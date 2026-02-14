@@ -217,6 +217,45 @@ app.post('/reset', (req, res) => {
 });
 
 // ------------------------------
+// 毎分チェックして 18:25 に自動リセット
+// ------------------------------
+setInterval(() => {
+  const now = new Date();
+  const hh = now.getHours();
+  const mm = now.getMinutes();
+
+  // 18:25 ちょうどになったら実行
+  if (hh === 18 && mm === 25) {
+    console.log("18:25 自動リセット実行");
+
+    // ① 全リセット
+    const rem = Array(BOARD_SIZE + 1).fill(0);
+    rem[0] = -1;
+
+    const owners = Object.fromEntries([...Array(BOARD_SIZE + 1).keys()].map(n => [n, []]));
+    const ts = Date.now();
+
+    const state = {
+      remaining: rem,
+      owners,
+      logs: [
+        {
+          id: ts,
+          at: ts,
+          user: 'SYSTEM',
+          results: [{ type: 'reset', ok: true }]
+        }
+      ],
+      lastUpdate: ts,
+      status: "お休み入力中",   // ← ② 自動でステータス変更
+      maintUsed: []
+    };
+
+    saveState(state);
+  }
+}, 1000 * 30); // 30秒ごとにチェック
+
+// ------------------------------
 // サーバ起動
 // ------------------------------
 const PORT = process.env.PORT || 3000;
