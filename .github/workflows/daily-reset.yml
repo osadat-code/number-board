@@ -2,7 +2,7 @@ name: Daily Reset
 
 on:
   schedule:
-    - cron: "50 9 * * *"   # JST 18:25（UTC 09:25）
+    - cron: "0 7 * * *"   # JST 16:00（UTC 07:00）
   workflow_dispatch:
 
 jobs:
