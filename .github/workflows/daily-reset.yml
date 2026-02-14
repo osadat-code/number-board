@@ -1,0 +1,20 @@
+name: Daily Reset
+
+on:
+  schedule:
+    - cron: "50 9 * * *"   # JST 18:25（UTC 09:25）
+  workflow_dispatch:
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 全リセット
+        run: |
+          curl -X POST https://あなたのRenderURL/reset
+
+      - name: ステータス変更（お休み入力中）
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"status":"お休み入力中"}' \
+            https://あなたのRenderURL/setStatus
