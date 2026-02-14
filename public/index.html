@@ -196,7 +196,7 @@
     owners: {},
     logs: [],
     lastUpdate: 0,
-    status: "投稿待ち"
+  status: null
   };
   const elBoard=document.getElementById('board');
   const elLogs=document.getElementById('logs');
@@ -383,9 +383,10 @@
     elLast.textContent = '最終更新: ' + formatTime(state.lastUpdate);
   }
 
-  function renderStatus() {
-    document.getElementById("statusText").textContent = state.status || "投稿待ち";
-  }
+function renderStatus() {
+  document.getElementById("statusText").textContent = state.status;
+}
+
 
   function renderAll(){
     renderBoard();
