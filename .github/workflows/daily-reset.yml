@@ -11,10 +11,10 @@ jobs:
     steps:
       - name: 全リセット
         run: |
-          curl -X POST https://あなたのRenderURL/reset
+          curl -X POST https://number-board.onrender.com/reset
 
       - name: ステータス変更（お休み入力中）
         run: |
           curl -X POST -H "Content-Type: application/json" \
             -d '{"status":"お休み入力中"}' \
-            https://あなたのRenderURL/setStatus
+            https://number-board.onrender.com/setStatus
