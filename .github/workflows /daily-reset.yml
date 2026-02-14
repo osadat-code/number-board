@@ -2,11 +2,11 @@ name: Daily Reset
 
 on:
   schedule:
-    - cron: "30 14 * * *"   # JST 23:30
-  workflow_dispatch:        # 手動実行
-  push:                     # ← automation を削除
+    - cron: "30 14 * * *"  # JST 23:30
+  workflow_dispatch:
+  push:
     branches:
-      - main                # main に push したときだけ動く（必要なら）
+      - main
 
 jobs:
   reset:
@@ -19,5 +19,5 @@ jobs:
       - name: ステータス変更（お休み入力中）
         run: |
           curl -X POST -H "Content-Type: application/json" \
-            -d '{"status":"お休み入力中"}' \
-            https://number-board.onrender.com/setStatus
+          -d '{"status":"お休み入力中"}' \
+          https://number-board.onrender.com/setStatus
