@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-const DB_FILE = '/tmp/state.json';
+const DB_FILE = process.env.DB_FILE || path.join(__dirname, 'state.json');
 const BOARD_SIZE = 55;
 const MAX_SLOTS = 4;
 
@@ -20,13 +20,17 @@ function loadState() {
       owners: Object.fromEntries([...Array(BOARD_SIZE + 1).keys()].map(n => [n, []])),
       logs: [],
       lastUpdate: Date.now(),
-      status: "投稿待ち"   // ★ 追加 
+      status: "投稿待ち",
+      maintUsed: []
     };
     init.remaining[0] = -1;
     fs.writeFileSync(DB_FILE, JSON.stringify(init, null, 2));
     return init;
   }
-  return JSON.parse(fs.readFileSync(DB_FILE));
+
+  const st = JSON.parse(fs.readFileSync(DB_FILE));
+  if (!st.maintUsed) st.maintUsed = [];
+  return st;
 }
 
 function saveState(st) {
@@ -56,7 +60,6 @@ app.post('/post', (req, res) => {
     numbers.forEach(n => {
       if (newRemaining[n] < MAX_SLOTS) {
         newRemaining[n]++;
-        if (!owners[n]) owners[n] = [];
         owners[n].push(uname);
         results.push({ type: 'inc', number: n, ok: true });
       } else {
@@ -89,15 +92,16 @@ app.post('/post', (req, res) => {
 
   const now = Date.now();
   state = {
-    ...state, // 既存のstatusなどを保持
+    ...state,
     remaining: newRemaining,
     owners,
     logs: [
-      { at: now, user: uname, results },
+      { id: now, at: now, user: uname, results },
       ...state.logs
     ].slice(0, 300),
     lastUpdate: now
   };
+
   saveState(state);
   res.json(state);
 });
@@ -117,6 +121,72 @@ app.post('/setStatus', (req, res) => {
 });
 
 // ------------------------------
+// API: お休み管理 実行済み記録
+// ------------------------------
+app.post('/maintMark', (req, res) => {
+  const { name } = req.body;
+  const state = loadState();
+
+  if (!state.maintUsed.includes(name)) {
+    state.maintUsed.push(name);
+  }
+
+  state.lastUpdate = Date.now();
+  saveState(state);
+  res.json(state);
+});
+
+// ------------------------------
+// API: 投稿取り消し（ログから）
+// ------------------------------
+app.post('/undo', (req, res) => {
+  const { id, user } = req.body;
+  let state = loadState();
+
+  const log = state.logs.find(l => l.id === id);
+  if (!log) return res.status(404).json({ error: "ログが見つかりません" });
+
+  // 投稿者本人チェック
+  if (log.user !== user) {
+    return res.status(403).json({ error: "投稿者本人のみ取り消せます" });
+  }
+
+  // 巻き戻し処理
+  const remaining = state.remaining.slice();
+  const owners = JSON.parse(JSON.stringify(state.owners));
+
+  for (const r of log.results) {
+    const n = r.number;
+
+    if (r.type === 'inc') {
+      // inc の取り消し → remaining-- & owners から削除
+      if (remaining[n] > 0) remaining[n]--;
+      owners[n] = owners[n].filter(u => u !== user);
+    }
+
+    else if (r.ok && r.reason !== 'dup') {
+      // take の取り消し → remaining++ & owners から削除
+      if (remaining[n] < MAX_SLOTS) remaining[n]++;
+      owners[n] = owners[n].filter(u => u !== user);
+    }
+
+    else if (r.type === 'set0') {
+      // set0 の取り消しは難しいので今回は対象外（必要なら実装可能）
+    }
+  }
+
+  // ログから削除
+  state.logs = state.logs.filter(l => l.id !== id);
+
+  state.remaining = remaining;
+  state.owners = owners;
+  state.lastUpdate = Date.now();
+
+  saveState(state);
+  res.json(state);
+});
+
+// ------------------------------
 // API: 全リセット
 // ------------------------------
 app.post('/reset', (req, res) => {
@@ -129,9 +199,17 @@ app.post('/reset', (req, res) => {
   const state = {
     remaining: rem,
     owners,
-    logs: [{ at: now, user: 'SYSTEM', results: [] }],
+    logs: [
+      {
+        id: now,
+        at: now,
+        user: 'SYSTEM',
+        results: [{ type: 'reset', ok: true }]
+      }
+    ],
     lastUpdate: now,
-    status: "投稿待ち" // リセット時も初期値をセット
+    status: "準備中",
+    maintUsed: []
   };
 
   saveState(state);
