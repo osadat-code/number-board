@@ -346,7 +346,7 @@ function formatTime(ts){
 
       const head=document.createElement('div');
       head.className='muted';
-      head.textContent = `${formatTime(l.at + 250)} ・ ${l.user || '匿名'}`;
+      head.textContent = `${formatTime(l.at - 400)} ・ ${l.user || '匿名'}`;
 
       /* ★ 投稿者本人だけに取消ボタンを表示 */
       if(currentUser && currentUser === l.user){
