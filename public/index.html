@@ -317,12 +317,12 @@
     elStat[3].textContent='空き3: '+cnt[3]+'件';
     elStat[4].textContent='空き4: '+cnt[4]+'件';
   }
-
-  function formatTime(ts){
-    const d=new Date(ts);
-    const pad=n=>String(n).padStart(2,'0');
-    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-  }
+function formatTime(ts){
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2,'0');
+  const ms = String(d.getMilliseconds()).padStart(3,'0');
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${ms}`;
+}
 
   /* ============================
      ★ 投稿ログ（取消ボタン付き）
@@ -346,7 +346,7 @@
 
       const head=document.createElement('div');
       head.className='muted';
-      head.textContent = `${formatTime(l.at)} ・ ${l.user || '匿名'}`;
+      head.textContent = `${formatTime(l.at + 250)} ・ ${l.user || '匿名'}`;
 
       /* ★ 投稿者本人だけに取消ボタンを表示 */
       if(currentUser && currentUser === l.user){
