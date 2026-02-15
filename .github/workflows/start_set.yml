@@ -1,4 +1,4 @@
-name: Daily Reset
+name: start_set
 
 on:
   schedule:
