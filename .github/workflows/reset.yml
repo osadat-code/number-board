@@ -1,4 +1,4 @@
-name: Daily Reset
+name: reset
 
 on:
   schedule:
