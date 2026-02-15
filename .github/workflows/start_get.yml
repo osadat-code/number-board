@@ -1,4 +1,4 @@
-name: Set Status to Waiting
+name: start_get
 
 on:
   schedule:
