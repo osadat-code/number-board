@@ -1,9 +1,14 @@
 name: start_get
 
 on:
-  schedule:
-    - cron: "30 12 * * *"  # 日本時間 21:30（12:30 UTC）
+  # cron-job.org からの通知を受け取る設定
+  repository_dispatch:
+    types: [trigger-from-cronjob]
+  
+  # GitHub画面から手動で実行したい時用
   workflow_dispatch:
+  
+  # mainブランチにコードをプッシュした時用
   push:
     branches:
       - main
