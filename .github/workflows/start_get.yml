@@ -1,12 +1,12 @@
 name: start_get
 
 on:
+  schedule:
+    - cron: "30 12 * * *"  # 日本時間 21:30（12:30 UTC）
   workflow_dispatch:
-    inputs:
-      dummy:
-        description: "dummy input"
-        required: false
-        default: "run"
+  push:
+    branches:
+      - main
 
 jobs:
   set-status:
