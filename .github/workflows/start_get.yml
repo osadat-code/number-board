@@ -2,6 +2,11 @@ name: start_get
 
 on:
   workflow_dispatch:
+    inputs:
+      dummy:
+        description: "dummy input"
+        required: false
+        default: "run"
 
 jobs:
   set-status:
