@@ -215,7 +215,12 @@ app.post('/reset', (req, res) => {
   saveState(state);
   res.json(state);
 });
-
+// ------------------------------
+// マッピング対応
+// ------------------------------
+app.get('/mapping', (req, res) => {
+res.sendFile(path.join(__dirname, 'public', 'mapping.html'));
+});
 // ------------------------------
 // サーバ起動
 // ------------------------------

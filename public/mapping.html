@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blitz 基地配置マップ (Clean White)</title>
+    <style>
+        :root {
+            /* 明るい配色設定：Clean White Style */
+            --bg: #f1f5f9;        /* 全体背景 */
+            --card: #ffffff;      /* カード背景 */
+            --bd: #cbd5e1;        /* カード枠線 */
+            --text: #0f172a;      /* メイン文字色 */
+            --accent: #2563eb;    /* アクセント（青） */
+            --absent-bg: #fee2e2; /* お休み背景（赤） */
+            --absent-text: #991b1b; /* お休み文字 */
+            --pre-bg: #dbeafe;    /* 先入れ背景（水色） */
+            --pre-text: #1e40af;  /* 先入れ文字 */
+            --guest-bg: #f3e8ff;  /* 助っ人背景（紫） */
+            --guest-text: #6b21a8; /* 助っ人文字 */
+        }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
+        
+        /* 11列のカスタムグリッドレイアウト */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 0.5fr 1fr 1fr 0.5fr 1fr 1fr 0.5fr 1fr 1fr; 
+            gap: 6px; 
+            max-width: 1350px; 
+            margin: 0 auto;
+        }
+
+        /* 基地カードのデザイン */
+        .card { 
+            background: var(--card); 
+            border: 1px solid var(--bd); 
+            border-radius: 4px; 
+            padding: 6px; 
+            min-height: 90px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        .header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--bg); padding-bottom: 3px; margin-bottom: 5px; }
+        .num { font-weight: bold; font-size: 1rem; color: var(--accent); }
+        .rem-val { font-weight: bold; font-size: 0.9rem; }
+        
+        /* 特殊枠の設定（0.5と0） */
+        .spacer { visibility: hidden; } 
+        .empty { border: none; background: transparent; box-shadow: none; } 
+
+        /* リストとアイテム */
+        .user-list { list-style: none; padding: 0; margin: 0; font-size: 0.75rem; flex-grow: 1; }
+        .user-item { padding: 2px 0; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f8fafc; }
+        
+        /* ステータスタグ */
+        .tag { font-size: 0.6rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+        .tag-present { background: #dcfce7; color: #166534; } /* 投稿済（緑） */
+        .tag-absent { background: var(--absent-bg); color: var(--absent-text); } /* お休み（赤） */
+        .tag-pre { background: var(--pre-bg); color: var(--pre-text); } /* 先入れ（青） */
+        .tag-default { color: #94a3b8; border: 1px solid #e2e8f0; } /* 担当（未投稿） */
+        .tag-guest { background: var(--guest-bg); color: var(--guest-text); } /* 助っ人（紫） */
+    </style>
+</head>
+<body>
+
+<div id="boardGrid" class="grid-container"></div>
+
+<script>
+    // 指定された配置図
+    const LAYOUT = [
+        [0, 42, 0.5, 0, 0, 0.5, 0, 0, 0.5, 0, 55],
+        [40, 41, 0.5, 45, 46, 0.5, 49, 50, 0.5, 53, 54],
+        [38, 39, 0.5, 43, 44, 0.5, 47, 48, 0.5, 51, 52],
+        [0, 0, 0.5, 0, 0, 0.5, 0, 0, 0.5, 0, 0],
+        [23, 24, 0.5, 27, 28, 0.5, 31, 32, 0.5, 36, 37],
+        [21, 22, 0.5, 25, 26, 0.5, 29, 30, 0.5, 34, 35],
+        [0, 20, 0.5, 0, 0, 0.5, 0, 0, 0.5, 0, 33],
+        [0, 0, 0.5, 0, 0, 0.5, 0, 0, 0.5, 0, 0],
+        [0, 7, 0.5, 0, 0, 0.5, 19, 0, 0.5, 0, 0],
+        [5, 6, 0.5, 12, 0, 0.5, 17, 18, 0.5, 0, 0],
+        [3, 4, 0.5, 10, 11, 0.5, 15, 16, 0.5, 0, 0],
+        [1, 2, 0.5, 8, 9, 0.5, 13, 14, 0.5, 0, 0],
+    ];
+
+    // 初期割り当てリスト
+    const MAINT_GROUPS = {
+        "madao": [1,2,3,4,5,6,7,8,9,14,20,21,22,23,24,25,26,27,28,38,39,40,41,42,43,44,45,46],
+        "Ford": [1,2,3,4,5,6,7,20,21,22,23,24,27,28,38,39,40,41,42,45,46],
+        "saku": [13,14,15,16,17,18,19,31,32,33,34,35,36,37,49,50,51,52,53,54,55],
+        "Astro": [13,14,15,16,17,18,30,33,34,35,36,37,48,51,52,53,54,55],
+        "sus": [8,9,10,11,12,25,26,27,28,29,43,44,45,46,47],
+        "sam": [8,9,10,11,12,19,30,33,34,35,36,37,48,51,52,53,54,55],
+        "ysnr": [13,15,17,19,29,30,31,32,47,48,49,50],
+        "niya": [13,14,15,16,17,18,29,30,31,32,36,37,47,48,49,50,51,52],
+        "lune": [8,9,10,11,12,20,21,22,25,26,40,41,42,43,44],
+        "snow": [4,10,11,12,28,29,31,32,46,47,49,50],
+        "大帝": [5,18,19,33,34,35,53,54,55],
+        "まー": [1,2,3,25,26,27,43,44,45],
+        "keito": [4,5,23,24,38,39],
+        "gato": [6,7,23,24,38,39],
+        "神龍": [6,7,20,21,22,40,41,42],
+        "hina": [1,2,3]
+    };
+
+    async function update() {
+        try {
+            const res = await fetch('/state');
+            const state = await res.json();
+            const grid = document.getElementById('boardGrid');
+            grid.innerHTML = '';
+
+            LAYOUT.flat().forEach(cell => {
+                const el = document.createElement('div');
+                
+                // 通路(0.5)
+                if (cell === 0.5) {
+                    el.className = 'spacer';
+                    grid.appendChild(el);
+                    return;
+                }
+                // 空き地(0)
+                if (cell === 0) {
+                    el.className = 'card empty';
+                    grid.appendChild(el);
+                    return;
+                }
+
+                // 基地カードの生成
+                const i = cell;
+                el.className = 'card';
+                
+                const initialStaff = Object.keys(MAINT_GROUPS).filter(name => MAINT_GROUPS[name].includes(i));
+                const currentPosted = state.owners[i] || [];
+
+                // 表記ゆれ対応の正規表現（さん有り・無しどちらも対応）
+                const rePre = /(さん)?先入れ$/;
+                const reAbs = /(さん)?お休み$/;
+
+                const reportedPreceded = currentPosted.filter(e => rePre.test(e)).map(e => e.replace(rePre, "").trim());
+                const reportedAbsents = currentPosted.filter(e => reAbs.test(e)).map(e => e.replace(reAbs, "").trim());
+
+                let listHtml = '';
+                let occupiedCount = 0;
+
+                // 1. 初期担当者の判定
+                initialStaff.forEach(name => {
+                    const isPreceded = reportedPreceded.includes(name);
+                    const isAbsent = reportedAbsents.includes(name);
+                    const hasPostedNormal = currentPosted.includes(name);
+
+                    if (isPreceded) {
+                        occupiedCount++; // 先入れは枠を消費
+                        listHtml += `<li class="user-item"><span>● ${name}</span><span class="tag tag-pre">先入れ</span></li>`;
+                    } else if (isAbsent) {
+                        // お休みは枠を消費しない
+                        listHtml += `<li class="user-item"><span>× ${name}</span><span class="tag tag-absent">お休み</span></li>`;
+                    } else {
+                        occupiedCount++;
+                        listHtml += `
+                            <li class="user-item">
+                                <span>● ${name}</span>
+                                <span class="tag ${hasPostedNormal ? 'tag-present' : 'tag-default'}">${hasPostedNormal ? '済' : '担'}</span>
+                            </li>`;
+                    }
+                });
+
+                // 2. 助っ人の判定（特殊報告を除外）
+                const guests = currentPosted.filter(e => 
+                    !initialStaff.includes(e) && !rePre.test(e) && !reAbs.test(e)
+                );
+                guests.forEach(name => {
+                    occupiedCount++;
+                    listHtml += `<li class="user-item" style="color:var(--accent)"><span>★ ${name}</span><span class="tag tag-guest">助</span></li>`;
+                });
+
+                const rem = Math.max(0, 4 - occupiedCount);
+                el.innerHTML = `
+                    <div class="header">
+                        <span class="num">${i}</span>
+                        <div style="text-align:right">
+                           <span style="font-size:0.5rem; color:#94a3b8; display:block; line-height:1">空き</span>
+                           <span class="rem-val" style="color:${rem === 0 ? '#ef4444' : 'inherit'}">${rem}</span>
+                        </div>
+                    </div>
+                    <ul class="user-list">${listHtml}</ul>
+                `;
+                grid.appendChild(el);
+            });
+        } catch (e) { console.error("Update Error:", e); }
+    }
+
+    update();
+    setInterval(update, 5000); // 5秒ごとに更新
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blitz 基地配置マップ (Light Mode)</title>
+    <style>
+        :root {
+            /* 明るい配色設定 */
+            --bg: #f1f5f9;        /* 背景：明るいグレーブルー */
+            --card: #ffffff;      /* カード：純白 */
+            --bd: #cbd5e1;        /* 境界線：少し濃いめのグレー */
+            --text: #0f172a;      /* 文字：濃い紺色 */
+            --accent: #2563eb;    /* アクセント：鮮やかなブルー */
+            --absent-text: #64748b; /* お休み文字：中間グレー */
+            --pre-bg: #dbeafe;    /* 先入れ背景：淡いブルー */
+            --pre-text: #1e40af;  /* 先入れ文字：濃いブルー */
+        }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
+        
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 0.5fr 1fr 1fr 0.5fr 1fr 1fr 0.5fr 1fr 1fr; 
+            gap: 6px; 
+            max-width: 1300px; 
+            margin: 0 auto;
+        }
+
+        .card { 
+            background: var(--card); 
+            border: 1px solid var(--bd); 
+            border-radius: 4px; 
+            padding: 6px; 
+            min-height: 90px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 軽い影で浮き立たせる */
+        }
+        .header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--bg); padding-bottom: 3px; margin-bottom: 5px; }
+        .num { font-weight: bold; font-size: 1rem; color: var(--accent); }
+        .rem-val { font-weight: bold; font-size: 0.9rem; }
+        
+        .spacer { visibility: hidden; } 
+        .empty { border: none; background: transparent; box-shadow: none; } 
+
+        .user-list { list-style: none; padding: 0; margin: 0; font-size: 0.75rem; }
+        .user-item { padding: 2px 0; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--bg); }
+        
+        .tag { font-size: 0.6rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+        .tag-present { background: #dcfce7; color: #166534; } /* 緑 */
+        .tag-absent { background: #fee2e2; color: #991b1b; }  /* 赤 */
+        .tag-pre { background: var(--pre-bg); color: var(--pre-text); } /* 青 */
+        .tag-default { color: #94a3b8; border: 1px solid #e2e8f0; } /* 枠のみグレー */
+        .tag-guest { background: #f3e8ff; color: #6b21a8; } /* 紫 */
+    </style>
+</head>
+<body>
+
+<div id="boardGrid" class="grid-container"></div>
+
+<script>
+    // ※ JavaScriptロジック（LAYOUT, MAINT_GROUPS, update関数等）は
+    // 前回の「完璧」なコードと全く同じものをそのまま使用してください。
+    // （色設定のCSS部分のみが変更箇所です）
+</script>
+</body>
+</html>
