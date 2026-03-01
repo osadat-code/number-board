@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+const CONFIG_FILE = "/tmp/autoConfig.json";   // ← Render で書き込み可能な場所
+
 function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
@@ -24,7 +26,8 @@ function getNextTarget(cfg) {
 
 async function precisePost(cfg, slotName) {
   try {
-    const res = await fetch("http://localhost:3000/post", {
+    // Render では localhost:3000 は存在しないので相対パスに変更
+    const res = await fetch("/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -33,6 +36,7 @@ async function precisePost(cfg, slotName) {
         user: cfg.user
       })
     });
+
     console.log(`[${slotName}] 投稿完了:`, new Date().toLocaleString(), cfg);
   } catch (e) {
     console.error(`[${slotName}] 投稿失敗:`, e.message);
@@ -42,7 +46,9 @@ async function precisePost(cfg, slotName) {
 async function loop() {
   console.log("自動投稿ループ開始...");
   while (true) {
-    const cfg = JSON.parse(fs.readFileSync("./autoConfig.json"));
+
+    // 毎ループで最新設定を読み直す
+    const cfg = JSON.parse(fs.readFileSync(CONFIG_FILE));
 
     const now = Date.now();
     const t1 = getNextTarget(cfg.slot1).getTime();

@@ -137,7 +137,7 @@ app.post('/maintMark', (req, res) => {
 });
 
 // ------------------------------
-// API: 投稿取り消し（ログから）
+// API: 投稿取り消し
 // ------------------------------
 app.post('/undo', (req, res) => {
   const { id, user } = req.body;
@@ -215,9 +215,17 @@ app.get('/mapping', (req, res) => {
 });
 
 // =====================================================
-// ★ 追加：自動投稿設定 API
+// ★ 自動投稿設定 API（Render 対応版）
 // =====================================================
-const CONFIG_FILE = path.join(__dirname, "autoConfig.json");
+const CONFIG_FILE = "/tmp/autoConfig.json";
+
+// 初回起動時にファイルが無ければ作成
+if (!fs.existsSync(CONFIG_FILE)) {
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify({
+    slot1: { hour: 14, min: 50, sec: 0, ms: 400, mode: "take", numbers: [8, 9], user: "test" },
+    slot2: { hour: 22, min: 0, sec: 0, ms: 400, mode: "take", numbers: [12], user: "test" }
+  }, null, 2));
+}
 
 app.get("/autoConfig", (req, res) => {
   const cfg = JSON.parse(fs.readFileSync(CONFIG_FILE));
@@ -230,7 +238,7 @@ app.post("/autoConfig", (req, res) => {
 });
 
 // =====================================================
-// ★ 追加：高精度スケジューラ起動
+// ★ 高精度スケジューラ起動
 // =====================================================
 require("./autoPoster");
 
