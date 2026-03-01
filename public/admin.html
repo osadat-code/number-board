@@ -105,11 +105,12 @@ async function save() {
     }
   };
 
-await fetch("/save-config", {
-  method: "POST",
-  headers: {"Content-Type": "application/json"},
-  body: JSON.stringify(body)
-});
+  // ★ 修正ポイント：/save-config → /autoConfig
+  await fetch("/autoConfig", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body)
+  });
 
   alert("保存しました");
 }
