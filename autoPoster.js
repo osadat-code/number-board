@@ -19,26 +19,40 @@ function getNextTarget(cfg) {
   return t;
 }
 
-async function precisePost(cfg) {
-  try {
-    const PORT = process.env.PORT || 10000; 
-    const res = await fetch(`http://localhost:${PORT}/post`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        mode: cfg.mode,
-        numbers: cfg.numbers,
-        user: cfg.user
-      })
-    });
+async function loop() {
+  console.log("自動投稿ループ開始...");
+  while (true) {
+    try {
+      if (!fs.existsSync(CONFIG_FILE)) {
+        console.log("設定ファイル待ち...");
+        await sleep(5000);
+        continue;
+      }
 
-    if (res.ok) {
-      console.log(`[自動投稿] 投稿完了:`, new Date().toLocaleString(), cfg);
-    } else {
-      console.error(`[自動投稿] 投稿失敗 (Status: ${res.status})`);
+      const cfg = JSON.parse(fs.readFileSync(CONFIG_FILE));
+      const now = Date.now();
+      const nextTime = getNextTarget(cfg).getTime();
+      const waitMs = nextTime - now;
+
+      // 待機時間が5秒以上ある場合は、5秒だけ待って設定を読み直す（設定変更をすぐに反映するため）
+      if (waitMs > 5000) {
+        await sleep(5000);
+        continue; // ループの最初に戻る
+      }
+
+      // 5秒以内に入ったら、ログを出して精密待機
+      console.log(`まもなく投稿します: (${new Date(nextTime).toLocaleString()})`);
+      while (Date.now() < nextTime) {
+        await new Promise(setImmediate);
+      }
+
+      await precisePost(cfg);
+      await sleep(2000);
+
+    } catch (err) {
+      console.error("ループ内でエラーが発生しました:", err.message);
+      await sleep(5000);
     }
-  } catch (e) {
-    console.error(`[自動投稿] 通信エラー:`, e.message);
   }
 }
 
