@@ -1,24 +1,22 @@
 const fs = require("fs");
 
-const CONFIG_FILE = "/tmp/autoConfig.json";   // ← Render で書き込み可能な場所
+const CONFIG_FILE = "/tmp/autoConfig.json";   // Render で書き込み可能な場所
 
 function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-// JST → UTC 補正して次の実行時刻を作る
+// JST のまま次の実行時刻を作る（UTC 変換しない）
 function getNextTarget(cfg) {
   const now = new Date();
   const t = new Date();
 
-  // JST(UTC+9) → UTC に変換
-  const hourUTC = cfg.hour - 9;
-
-  t.setUTCHours(hourUTC, cfg.min, cfg.sec, cfg.ms);
+  // JST のままセット
+  t.setHours(cfg.hour, cfg.min, cfg.sec, cfg.ms);
 
   // もし現在時刻を過ぎていたら翌日にする
   if (t <= now) {
-    t.setUTCDate(t.getUTCDate() + 1);
+    t.setDate(t.getDate() + 1);
   }
 
   return t;
