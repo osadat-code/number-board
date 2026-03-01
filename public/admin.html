@@ -13,7 +13,7 @@ button { margin-top: 20px; padding: 10px 20px; }
 </head>
 <body>
 
-<h2>自動投稿設定（1つ目）</h2>
+<h2>自動投稿設定</h2>
 
 <div class="row">
   <label>時</label><input id="h1" type="number" min="0" max="23">
@@ -34,89 +34,41 @@ button { margin-top: 20px; padding: 10px 20px; }
 <label>user</label>
 <input id="user1" type="text">
 
-<hr>
-
-<h2>自動投稿設定（2つ目）</h2>
-
-<div class="row">
-  <label>時</label><input id="h2" type="number" min="0" max="23">
-  <label>分</label><input id="m2" type="number" min="0" max="59">
-  <label>秒</label><input id="s2" type="number" min="0" max="59">
-  <label>ミリ秒</label><input id="ms2" type="number" min="0" max="999">
-</div>
-
-<label>mode</label>
-<select id="mode2">
-  <option value="take">take</option>
-  <option value="inc">inc</option>
-</select>
-
-<label>numbers（カンマ区切り）</label>
-<input id="numbers2" type="text">
-
-<label>user</label>
-<input id="user2" type="text">
-
 <button onclick="save()">保存</button>
 
 <script>
 async function load() {
   const cfg = await (await fetch("/autoConfig")).json();
 
-  const c1 = cfg["slot1"];
-  const c2 = cfg["slot2"];
-
-  h1.value = c1.hour;
-  m1.value = c1.min;
-  s1.value = c1.sec;
-  ms1.value = c1.ms;
-  mode1.value = c1.mode;
-  numbers1.value = c1.numbers.join(",");
-  user1.value = c1.user;
-
-  h2.value = c2.hour;
-  m2.value = c2.min;
-  s2.value = c2.sec;
-  ms2.value = c2.ms;
-  mode2.value = c2.mode;
-  numbers2.value = c2.numbers.join(",");
-  user2.value = c2.user;
+  h1.value = cfg.hour;
+  m1.value = cfg.min;
+  s1.value = cfg.sec;
+  ms1.value = cfg.ms;
+  mode1.value = cfg.mode;
+  numbers1.value = cfg.numbers.join(",");
+  user1.value = cfg.user;
 }
 
 async function save() {
   const body = {
-    "slot1": {
-      hour: Number(h1.value),
-      min: Number(m1.value),
-      sec: Number(s1.value),
-      ms: Number(ms1.value),
-      mode: mode1.value,
-      numbers: numbers1.value.split(",").map(x => Number(x.trim())),
-      user: user1.value
-    },
-    "slot2": {
-      hour: Number(h2.value),
-      min: Number(m2.value),
-      sec: Number(s2.value),
-      ms: Number(ms2.value),
-      mode: mode2.value,
-      numbers: numbers2.value.split(",").map(x => Number(x.trim())),
-      user: user2.value
-    }
+    hour: Number(h1.value),
+    min: Number(m1.value),
+    sec: Number(s1.value),
+    ms: Number(ms1.value),
+    mode: mode1.value,
+    numbers: numbers1.value.split(",").map(x => Number(x.trim())).filter(x => !isNaN(x) && x > 0),
+    user: user1.value
   };
 
-  // ★ 修正ポイント：/save-config → /autoConfig
   await fetch("/autoConfig", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
   });
-
-  alert("保存しました");
+  alert("保存しました！");
 }
 
 load();
 </script>
-
 </body>
 </html>

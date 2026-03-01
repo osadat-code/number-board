@@ -222,8 +222,7 @@ const CONFIG_FILE = "/tmp/autoConfig.json";
 // 初回起動時にファイルが無ければ作成
 if (!fs.existsSync(CONFIG_FILE)) {
   fs.writeFileSync(CONFIG_FILE, JSON.stringify({
-    slot1: { hour: 14, min: 50, sec: 0, ms: 400, mode: "take", numbers: [8, 9], user: "test" },
-    slot2: { hour: 22, min: 0, sec: 0, ms: 400, mode: "take", numbers: [12], user: "test" }
+    hour: 14, min: 50, sec: 0, ms: 400, mode: "take", numbers: [8, 9], user: "test"
   }, null, 2));
 }
 
@@ -233,11 +232,10 @@ app.get("/autoConfig", (req, res) => {
 });
 
 app.post("/autoConfig", (req, res) => {
-  console.log("★★ /autoConfig に POST が来た:", req.body);   // ← 追加
+  console.log("★★ /autoConfig に POST が来た:", req.body);
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(req.body, null, 2));
   res.json({ ok: true });
 });
-
 
 // =====================================================
 // ★ 高精度スケジューラ起動
