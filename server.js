@@ -233,9 +233,11 @@ app.get("/autoConfig", (req, res) => {
 });
 
 app.post("/autoConfig", (req, res) => {
+  console.log("★★ /autoConfig に POST が来た:", req.body);   // ← 追加
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(req.body, null, 2));
   res.json({ ok: true });
 });
+
 
 // =====================================================
 // ★ 高精度スケジューラ起動
