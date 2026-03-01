@@ -146,12 +146,10 @@ app.post('/undo', (req, res) => {
   const log = state.logs.find(l => l.id === id);
   if (!log) return res.status(404).json({ error: "ログが見つかりません" });
 
-  // 投稿者本人チェック
   if (log.user !== user) {
     return res.status(403).json({ error: "投稿者本人のみ取り消せます" });
   }
 
-  // 巻き戻し処理
   const remaining = state.remaining.slice();
   const owners = JSON.parse(JSON.stringify(state.owners));
 
@@ -159,23 +157,16 @@ app.post('/undo', (req, res) => {
     const n = r.number;
 
     if (r.type === 'inc') {
-      // inc の取り消し → remaining-- & owners から削除
       if (remaining[n] > 0) remaining[n]--;
       owners[n] = owners[n].filter(u => u !== user);
     }
 
     else if (r.ok && r.reason !== 'dup') {
-      // take の取り消し → remaining++ & owners から削除
       if (remaining[n] < MAX_SLOTS) remaining[n]++;
       owners[n] = owners[n].filter(u => u !== user);
     }
-
-    else if (r.type === 'set0') {
-      // set0 の取り消しは難しいので今回は対象外（必要なら実装可能）
-    }
   }
 
-  // ログから削除
   state.logs = state.logs.filter(l => l.id !== id);
 
   state.remaining = remaining;
@@ -215,12 +206,34 @@ app.post('/reset', (req, res) => {
   saveState(state);
   res.json(state);
 });
+
 // ------------------------------
 // マッピング対応
 // ------------------------------
 app.get('/mapping', (req, res) => {
-res.sendFile(path.join(__dirname, 'public', 'mapping.html'));
+  res.sendFile(path.join(__dirname, 'public', 'mapping.html'));
 });
+
+// =====================================================
+// ★ 追加：自動投稿設定 API
+// =====================================================
+const CONFIG_FILE = path.join(__dirname, "autoConfig.json");
+
+app.get("/autoConfig", (req, res) => {
+  const cfg = JSON.parse(fs.readFileSync(CONFIG_FILE));
+  res.json(cfg);
+});
+
+app.post("/autoConfig", (req, res) => {
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(req.body, null, 2));
+  res.json({ ok: true });
+});
+
+// =====================================================
+// ★ 追加：高精度スケジューラ起動
+// =====================================================
+require("./autoPoster");
+
 // ------------------------------
 // サーバ起動
 // ------------------------------

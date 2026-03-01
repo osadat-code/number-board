@@ -1,0 +1,20 @@
+{
+  "slot1": {
+    "hour": 21,
+    "min": 50,
+    "sec": 0,
+    "ms": 400,
+    "mode": "take",
+    "numbers": [5],
+    "user": "test"
+  },
+  "slot2": {
+    "hour": 22,
+    "min": 0,
+    "sec": 0,
+    "ms": 400,
+    "mode": "take",
+    "numbers": [12],
+    "user": "test"
+  }
+}
