@@ -1,0 +1,19 @@
+name: start_get
+
+on:
+  schedule:
+    - cron: "30 12 * * *"  # 日本時間 21:30（12:30 UTC）
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  set-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ステータス変更（投稿待ち）
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"status":"投稿待ち"}' \
+          https://number-board.onrender.com/setStatus
